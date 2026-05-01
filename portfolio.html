@@ -6,16 +6,17 @@
   <title>Tucson DATA · Strategic portfolio</title>
   <meta name="description" content="The data program portfolio rolled up by Data Program Goal.">
 
-  <link rel="icon" href="assets/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" href="assets/favicon.png">
-  <link rel="apple-touch-icon" href="assets/favicon.png">
+  <link rel="icon" href="assets/favicon.ico?v=3" sizes="any">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=3">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/tokens.css?v=3">
+  <link rel="stylesheet" href="css/base.css?v=3">
+  <link rel="stylesheet" href="css/components.css?v=3">
 </head>
 <body>
 
@@ -41,20 +42,25 @@
 
   <main class="page">
     <div class="container">
-      <section>
-        <div class="section-heading">Goals</div>
-        <p class="muted" style="font-family: var(--font-serif); font-size: var(--text-md); line-height: var(--leading-loose);">Page skeleton. Goal cards with status counts and sample projects arrive in chunk 1.6.</p>
+
+      <section style="margin-bottom: var(--space-10);">
+        <div class="portfolio-grid" id="portfolio-grid">
+          <p class="muted">Loading…</p>
+        </div>
       </section>
+
+      <section id="orphans"></section>
+
     </div>
   </main>
 
   <footer class="page-footer">
     <div class="container">
-      <span>Tucson DATA · v0.1.0.0002</span>
+      <span>Tucson DATA · v0.1.0.0003</span>
       <span class="muted">City of Tucson Information Technology Department</span>
     </div>
   </footer>
 
-  <script type="module" src="js/pages/portfolio.js"></script>
+  <script type="module" src="js/pages/portfolio.js?v=3"></script>
 </body>
 </html>

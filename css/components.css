@@ -1,0 +1,237 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   components.css — page-specific component styles
+   Goal cards, portfolio cards, activity rows, status dots, etc.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ─── Status dot — small color swatch used in lists ─────────────────────── */
+
+.status-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
+/* ─── Goal cards (home page roadmap-views grid) ─────────────────────────── */
+
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.goal-card {
+  display: block;
+  text-decoration: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--goal-accent, var(--text-tertiary));
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  color: inherit;
+}
+
+.goal-card:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.goal-card__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--cot-innovation-blue);
+  margin-bottom: var(--space-1);
+}
+
+.goal-card__desc {
+  font-family: var(--font-serif);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.goal-card__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+}
+
+.goal-card__count { white-space: nowrap; }
+
+/* ─── Portfolio cards (Strategic Portfolio View) ────────────────────────── */
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.portfolio-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 5px solid var(--goal-accent, var(--text-tertiary));
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+
+.portfolio-card__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--cot-innovation-blue);
+  letter-spacing: var(--tracking-tight);
+}
+
+.portfolio-card__count-total {
+  font-family: var(--font-sans);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-black);
+  color: var(--goal-accent);
+  line-height: 1;
+}
+
+.portfolio-card__desc {
+  font-family: var(--font-serif);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.portfolio-card__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+
+.portfolio-card__count strong {
+  font-weight: var(--weight-black);
+  margin-right: 2px;
+}
+
+.portfolio-card__projects {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-loose);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-3);
+}
+
+.portfolio-card__projects li {
+  padding: var(--space-1) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.portfolio-card__more {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  margin-top: var(--space-2);
+}
+
+.portfolio-card__empty {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--text-sm);
+}
+
+/* ─── Activity feed (home page) ─────────────────────────────────────────── */
+
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.activity-row {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+}
+
+.activity-row:last-child { border-bottom: none; }
+
+.activity-row__date {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-weight: var(--weight-bold);
+}
+
+.activity-row__title {
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activity-row__status {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ─── Orphans / Unclassified list (portfolio page) ──────────────────────── */
+
+.orphan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+}
+
+.orphan-list li {
+  padding: var(--space-2) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  border-bottom: 1px dashed var(--border-subtle);
+}
+
+.orphan-list li:last-child { border-bottom: none; }
+
+/* ─── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 800px) {
+  .goal-grid,
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .activity-row {
+    grid-template-columns: 100px 1fr;
+    gap: var(--space-2);
+  }
+  .activity-row__status { grid-column: 1 / -1; }
+}
