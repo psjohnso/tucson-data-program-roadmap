@@ -181,11 +181,12 @@
   display: grid;
   grid-template-columns: 100px 1fr auto;
   gap: var(--space-3);
-  align-items: center;
+  align-items: start;
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
   font-family: var(--font-sans);
   font-size: var(--text-base);
+  line-height: var(--leading-normal);
 }
 
 .activity-row:last-child { border-bottom: none; }
@@ -194,13 +195,12 @@
   font-size: var(--text-sm);
   color: var(--text-secondary);
   font-weight: var(--weight-bold);
+  padding-top: 2px;
 }
 
 .activity-row__title {
   color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-break: break-word;
 }
 
 .activity-row__status {
@@ -208,6 +208,8 @@
   font-weight: var(--weight-bold);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+  padding-top: 2px;
 }
 
 /* ─── Orphans / Unclassified list (portfolio page) ──────────────────────── */
