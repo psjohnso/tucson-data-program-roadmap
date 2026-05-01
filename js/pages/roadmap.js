@@ -23,8 +23,9 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=9';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=9';
+} from '../data.js?v=10';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=10';
+import { openProjectModal } from '../modal.js?v=10';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
@@ -456,15 +457,9 @@ function hideTooltip(tooltip) {
 }
 
 function onBarClick(bar) {
-  // Until chunk 1.5 (item detail modal) ships, clicking a bar opens
-  // the project in the tracker. The tracker's deep-link pattern is
-  // /index.html#/project/<ObjectId> — we'll rely on it to handle the
-  // route. If that doesn't match the tracker's actual routing,
-  // this can be adjusted in chunk 1.5.
   const id = bar.getAttribute('data-objectid');
   if (!id) return;
-  const url = `https://psjohnso.github.io/analytics-tracker/#/project/${id}`;
-  window.open(url, '_blank', 'noopener,noreferrer');
+  openProjectModal(id);
 }
 
 /* ─── Helpers ───────────────────────────────────────────────────────────── */

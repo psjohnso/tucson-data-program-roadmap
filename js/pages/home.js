@@ -12,8 +12,9 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=9';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=9';
+} from '../data.js?v=10';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=10';
+import { openProjectModal } from '../modal.js?v=10';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -100,7 +101,7 @@ async function renderRecentlyShipped() {
       const ago = date ? formatRelativeDate(date) : '';
 
       return `
-        <div class="activity-row">
+        <div class="activity-row activity-row--clickable" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
           <span class="activity-row__date" title="${escape(ago)}">${escape(dateStr)}</span>
           <span class="activity-row__title">${escape(projectDisplayTitle(p))}</span>
           <span class="activity-row__status" style="color: var(--status-complete);">Shipped</span>
@@ -131,7 +132,7 @@ async function renderComingUp() {
       const statusColor = STATUS_COLOR_VAR[p.status] || 'var(--status-idea)';
 
       return `
-        <div class="activity-row">
+        <div class="activity-row activity-row--clickable" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
           <span class="activity-row__date">${escape(dateStr)}</span>
           <span class="activity-row__title">${escape(projectDisplayTitle(p))}</span>
           <span class="activity-row__status" style="color: ${statusColor};">${escape(p.status || '')}</span>
@@ -192,3 +193,18 @@ renderStatusStrip();
 renderRoadmapViewsGrid();
 renderRecentlyShipped();
 renderComingUp();
+
+// Event delegation: clickable rows open the modal
+document.addEventListener('click', e => {
+  const row = e.target.closest('.activity-row--clickable[data-objectid]');
+  if (row) openProjectModal(row.getAttribute('data-objectid'));
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const row = e.target.closest && e.target.closest('.activity-row--clickable[data-objectid]');
+  if (row) {
+    e.preventDefault();
+    openProjectModal(row.getAttribute('data-objectid'));
+  }
+});

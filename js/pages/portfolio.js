@@ -4,8 +4,9 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=9';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=9';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=10';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=10';
+import { openProjectModal } from '../modal.js?v=10';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
@@ -48,7 +49,7 @@ async function renderPortfolio() {
           ${sampleProjects.length ? `
             <ul class="portfolio-card__projects">
               ${sampleProjects.map(p => `
-                <li>
+                <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
                   <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
                   ${escape(projectDisplayTitle(p))}
                 </li>`).join('')}
@@ -72,7 +73,7 @@ async function renderPortfolio() {
           </p>
           <ul class="orphan-list">
             ${unclassified.slice(0, 10).map(p => `
-              <li>
+              <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
                 <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
                 ${escape(projectDisplayTitle(p))}
                 <span class="faint" style="margin-left: var(--space-2);">${escape(p.status || '')}</span>
@@ -112,3 +113,18 @@ function escape(str) {
 }
 
 renderPortfolio();
+
+// Event delegation: any click on a .project-item element opens the modal
+document.addEventListener('click', e => {
+  const item = e.target.closest('.project-item[data-objectid]');
+  if (item) openProjectModal(item.getAttribute('data-objectid'));
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const item = e.target.closest && e.target.closest('.project-item[data-objectid]');
+  if (item) {
+    e.preventDefault();
+    openProjectModal(item.getAttribute('data-objectid'));
+  }
+});
