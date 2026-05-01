@@ -23,8 +23,8 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=8';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=8';
+} from '../data.js?v=9';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=9';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
