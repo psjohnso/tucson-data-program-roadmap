@@ -6,17 +6,17 @@
   <title>Tucson DATA · Roadmap</title>
   <meta name="description" content="The City of Tucson Data Team's program roadmap, organized by Data Program Goal.">
 
-  <link rel="icon" href="assets/favicon.ico?v=7" sizes="any">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=7">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=7">
+  <link rel="icon" href="assets/favicon.ico?v=8" sizes="any">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=8">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=8">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/tokens.css?v=7">
-  <link rel="stylesheet" href="css/base.css?v=7">
-  <link rel="stylesheet" href="css/components.css?v=7">
+  <link rel="stylesheet" href="css/tokens.css?v=8">
+  <link rel="stylesheet" href="css/base.css?v=8">
+  <link rel="stylesheet" href="css/components.css?v=8">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
       <div class="header-text">
         <div class="header-eyebrow">City of Tucson · Information Technology</div>
         <h1 class="header-title">Data program roadmap</h1>
-        <p class="header-subtitle">Active and scheduled work across the six Data Program goals, on a single timeline.</p>
+        <p class="header-subtitle">Active, scheduled, and upcoming work across the six Data Program goals. The orange line marks today; bars show project duration colored by status.</p>
       </div>
     </div>
     <nav class="topnav" aria-label="Primary navigation">
@@ -43,19 +43,34 @@
   <main class="page">
     <div class="container">
       <section>
-        <div class="section-heading">Timeline</div>
-        <p class="prose muted">The interactive timeline canvas — bars across a date axis with lanes by Data Program Goal, color-coded by status, with a "today" marker — arrives in the next chunk of work. For now, the home and portfolio pages show real data wired to the tracker.</p>
+        <div class="timeline-wrap">
+          <div id="timeline">
+            <p class="muted" style="padding: var(--space-4);">Loading…</p>
+          </div>
+          <div class="timeline-legend">
+            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-active);"></span>Active</span>
+            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-scheduled);"></span>Scheduled</span>
+            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-future);"></span>Future</span>
+            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-onhold);"></span>On hold</span>
+            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-canceled);"></span>Cancelled</span>
+            <span class="timeline-legend__item"><span class="timeline-legend__line"></span>Today</span>
+            <span class="timeline-legend__note">Lane = Data Program Goal · click any bar to open in tracker</span>
+          </div>
+        </div>
+        <p class="muted prose" style="margin-top: var(--space-4); font-size: var(--text-sm);">
+          Showing projects with at least one date set, in a window from 3 months back to 18 months forward. Completed work appears on the "Recently shipped" panel of the home page.
+        </p>
       </section>
     </div>
   </main>
 
   <footer class="page-footer">
     <div class="container">
-      <span>Tucson DATA · v0.1.0.0007</span>
+      <span>Tucson DATA · v0.1.0.0008</span>
       <span class="muted">City of Tucson Information Technology Department</span>
     </div>
   </footer>
 
-  <script type="module" src="js/pages/roadmap.js?v=7"></script>
+  <script type="module" src="js/pages/roadmap.js?v=8"></script>
 </body>
 </html>

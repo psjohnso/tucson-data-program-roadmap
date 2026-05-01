@@ -12,8 +12,8 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=7';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=7';
+} from '../data.js?v=8';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=8';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
