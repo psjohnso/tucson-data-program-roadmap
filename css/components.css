@@ -162,6 +162,12 @@
 
 /* ─── Activity feed (home page) ─────────────────────────────────────────── */
 
+.home-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
 .activity-feed {
   display: flex;
   flex-direction: column;
@@ -173,8 +179,8 @@
 
 .activity-row {
   display: grid;
-  grid-template-columns: 130px 1fr auto;
-  gap: var(--space-4);
+  grid-template-columns: 100px 1fr auto;
+  gap: var(--space-3);
   align-items: center;
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
@@ -228,7 +234,8 @@
 
 @media (max-width: 800px) {
   .goal-grid,
-  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-grid,
+  .home-bottom-grid { grid-template-columns: 1fr; }
   .activity-row {
     grid-template-columns: 100px 1fr;
     gap: var(--space-2);

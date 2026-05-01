@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear } from './config.js?v=5';
+import { getFiscalYear } from './config.js?v=6';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -125,12 +125,32 @@ export async function getProjectsByGoal({ filters = {} } = {}) {
   return groups;
 }
 
-/** Most recently edited projects. Useful for the "Recent activity" feed. */
-export async function getRecentlyEdited({ limit = 5 } = {}) {
+/** Most recently shipped Data Program work — projects with status=Complete
+ *  and an actual_end date, sorted newest first. Replaces the earlier
+ *  "Recently edited" feed which conflated row updates with project progress. */
+export async function getRecentlyShipped({ limit = 6 } = {}) {
   const all = await loadAllProjects();
-  return [...all]
-    .filter(p => p.EditDate)
-    .sort((a, b) => (b.EditDate || 0) - (a.EditDate || 0))
+  return all
+    .filter(p => p.status === 'Complete' && p.actual_end)
+    .sort((a, b) => {
+      const ad = projectActualEndDate(a)?.getTime() ?? 0;
+      const bd = projectActualEndDate(b)?.getTime() ?? 0;
+      return bd - ad;
+    })
+    .slice(0, limit);
+}
+
+/** What's coming up — Active or Scheduled projects sorted by working_due
+ *  date ascending. Earliest due first, so leadership sees what's about to land. */
+export async function getComingUp({ limit = 6 } = {}) {
+  const all = await loadAllProjects();
+  return all
+    .filter(p => (p.status === 'Active' || p.status === 'Scheduled') && p.working_due)
+    .sort((a, b) => {
+      const ad = projectEndDate(a)?.getTime() ?? Infinity;
+      const bd = projectEndDate(b)?.getTime() ?? Infinity;
+      return ad - bd;
+    })
     .slice(0, limit);
 }
 

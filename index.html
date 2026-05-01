@@ -6,17 +6,17 @@
   <title>Tucson DATA · Data program portfolio</title>
   <meta name="description" content="A live view of the City of Tucson Data Team's work advancing the city's data program.">
 
-  <link rel="icon" href="assets/favicon.ico?v=5" sizes="any">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=5">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=5">
+  <link rel="icon" href="assets/favicon.ico?v=6" sizes="any">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=6">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=6">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/tokens.css?v=5">
-  <link rel="stylesheet" href="css/base.css?v=5">
-  <link rel="stylesheet" href="css/components.css?v=5">
+  <link rel="stylesheet" href="css/tokens.css?v=6">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/components.css?v=6">
 </head>
 <body>
 
@@ -78,10 +78,20 @@
         </div>
       </section>
 
-      <section>
-        <div class="section-heading">Recent activity</div>
-        <div class="activity-feed" id="recent-activity">
-          <p class="muted" style="padding: var(--space-4);">Loading…</p>
+      <section class="home-bottom-grid">
+        <div>
+          <div class="section-heading">Recently shipped</div>
+          <p class="muted prose" style="margin-bottom: var(--space-3);">Data Program work delivered, most recent first.</p>
+          <div class="activity-feed" id="recently-shipped">
+            <p class="muted" style="padding: var(--space-4);">Loading…</p>
+          </div>
+        </div>
+        <div>
+          <div class="section-heading">Coming up</div>
+          <p class="muted prose" style="margin-bottom: var(--space-3);">Active and scheduled projects, sorted by working due date.</p>
+          <div class="activity-feed" id="coming-up">
+            <p class="muted" style="padding: var(--space-4);">Loading…</p>
+          </div>
         </div>
       </section>
 
@@ -90,11 +100,11 @@
 
   <footer class="page-footer">
     <div class="container">
-      <span>Tucson DATA · v0.1.0.0005</span>
+      <span>Tucson DATA · v0.1.0.0006</span>
       <span class="muted">City of Tucson Information Technology Department</span>
     </div>
   </footer>
 
-  <script type="module" src="js/pages/home.js?v=5"></script>
+  <script type="module" src="js/pages/home.js?v=6"></script>
 </body>
 </html>

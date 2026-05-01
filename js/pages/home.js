@@ -6,12 +6,14 @@
 import {
   getStatusCounts,
   getShippedCount,
-  getRecentlyEdited,
+  getRecentlyShipped,
+  getComingUp,
   getProjectsByGoal,
   projectDisplayTitle,
-  projectEditDate
-} from '../data.js?v=5';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=5';
+  projectActualEndDate,
+  projectEndDate
+} from '../data.js?v=6';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=6';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -79,22 +81,53 @@ async function renderRoadmapViewsGrid() {
   }
 }
 
-/* ─── Recent activity feed ──────────────────────────────────────────────── */
+/* ─── Recently shipped ──────────────────────────────────────────────────── */
 
-async function renderRecentActivity() {
-  const target = document.getElementById('recent-activity');
+async function renderRecentlyShipped() {
+  const target = document.getElementById('recently-shipped');
   if (!target) return;
 
   try {
-    const recent = await getRecentlyEdited({ limit: 6 });
-    if (!recent.length) {
-      target.innerHTML = `<p class="muted">No recent activity.</p>`;
+    const shipped = await getRecentlyShipped({ limit: 6 });
+    if (!shipped.length) {
+      target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing shipped yet.</p>`;
       return;
     }
 
-    target.innerHTML = recent.map(p => {
-      const editDate = projectEditDate(p);
-      const dateStr = editDate ? formatRelativeDate(editDate) : '';
+    target.innerHTML = shipped.map(p => {
+      const date = projectActualEndDate(p);
+      const dateStr = date ? formatShortDate(date) : '';
+      const ago = date ? formatRelativeDate(date) : '';
+
+      return `
+        <div class="activity-row">
+          <span class="activity-row__date" title="${escape(ago)}">${escape(dateStr)}</span>
+          <span class="activity-row__title">${escape(projectDisplayTitle(p))}</span>
+          <span class="activity-row__status" style="color: var(--status-complete);">Shipped</span>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    console.error('Failed to render recently shipped:', err);
+    target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Couldn't load shipped projects.</p>`;
+  }
+}
+
+/* ─── Coming up ─────────────────────────────────────────────────────────── */
+
+async function renderComingUp() {
+  const target = document.getElementById('coming-up');
+  if (!target) return;
+
+  try {
+    const coming = await getComingUp({ limit: 6 });
+    if (!coming.length) {
+      target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing scheduled in the near term.</p>`;
+      return;
+    }
+
+    target.innerHTML = coming.map(p => {
+      const date = projectEndDate(p);
+      const dateStr = date ? formatShortDate(date) : '';
       const statusColor = STATUS_COLOR_VAR[p.status] || 'var(--status-idea)';
 
       return `
@@ -105,8 +138,8 @@ async function renderRecentActivity() {
         </div>`;
     }).join('');
   } catch (err) {
-    console.error('Failed to render recent activity:', err);
-    target.innerHTML = `<p class="muted">Couldn't load recent activity.</p>`;
+    console.error('Failed to render coming up:', err);
+    target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Couldn't load upcoming projects.</p>`;
   }
 }
 
@@ -128,6 +161,10 @@ function escape(str) {
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function formatShortDate(date) {
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function formatRelativeDate(date) {
@@ -153,4 +190,5 @@ function showError(slotId, err) {
 
 renderStatusStrip();
 renderRoadmapViewsGrid();
-renderRecentActivity();
+renderRecentlyShipped();
+renderComingUp();
