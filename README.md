@@ -1,67 +1,107 @@
 # Tucson DATA
 
-Leadership-facing window onto the City of Tucson Data Team's data program portfolio. Reads from the same AGOL feature services the team's internal Analytics Project Tracker writes to. Read-only.
+Leadership-facing window onto the City of Tucson Data Team's data program portfolio. Reads live from the same AGOL feature services the team's internal Analytics Project Tracker writes to. Read-only.
 
-**Current version:** 0.1.0.0001 (Phase 1, chunk 1.1 — project skeleton)
+**Current version:** 0.1.0.0004
 
 ---
 
 ## Status
 
-Chunk 1.1 done. Three pages render the COT-branded header band and link to each other. Status strip on the home page is wired to a live data layer reading a placeholder seed.json with 3 sample projects.
+- ✅ Chunk 1.1 — project skeleton with COT brand
+- ✅ Chunk 1.2 — data layer wired to live AGOL feature service
+- ✅ Chunk 1.3 — workspace home with status strip, roadmap views grid, recent activity feed
+- ✅ Chunk 1.6 — strategic portfolio view with goal cards
+- ⏳ Chunk 1.4 — roadmap timeline canvas (next)
+- ⏳ Chunk 1.5 — item detail modal
+- ⏳ Chunk 1.7 — first scoped demo link
 
-Next: chunk 1.2 — replace seed.json with the real export of 39 Data Program projects from the tracker.
-
-See `SPRINT_PLAN.md` for the full chunk-by-chunk plan.
+See the project documentation in Claude.ai for the full plan.
 
 ## Run locally
-
-This is a static site — no build step. Any static file server works.
 
 ```bash
 # From the tucson-data/ directory
 python3 -m http.server 8080
-
 # Then open http://localhost:8080/
 ```
 
-Don't open the .html files via `file://` — modules and `fetch('data/seed.json')` need an HTTP server.
+Don't open the .html files via `file://` — ES modules and AGOL fetches need an HTTP server.
+
+## Deployment
+
+Static files on GitHub Pages, no build step.
+
+1. Replace files in your local `tucson-data-program-roadmap` clone (keep the `.git` folder)
+2. GitHub Desktop → review changes → commit → push
+3. Wait ~60 seconds, hard-refresh once
+
+## Cache-busting protocol — IMPORTANT
+
+GitHub Pages caches static files aggressively. To force browsers to fetch new versions, every file reference uses a `?v=N` query string:
+
+- HTML files reference CSS/JS as `css/base.css?v=4`, `js/pages/home.js?v=4`, etc.
+- JS modules reference each other as `import { ... } from '../data.js?v=4'`
+
+**On every release, the version number in `?v=` must be bumped consistently across:**
+- All `<link>` and `<script>` tags in all HTML files
+- All `import` statements in `data.js`, `pages/home.js`, `pages/portfolio.js`, `pages/roadmap.js`
+- The `APP_VERSION` constant in `js/config.js`
+- The footer text `v0.1.0.NNNN` in all HTML files
+
+If even one of these is missed, browsers may load a mix of old and new files, which can cause errors like *"module does not provide an export named X"* (one stale, one fresh).
+
+A simple grep-and-replace handles it. From the project root:
+
+```bash
+# Bump query strings (replace 4 with old version, 5 with new)
+find . -type f \( -name "*.html" -o -name "*.js" \) -exec sed -i 's/?v=4/?v=5/g' {} +
+
+# Bump version footer
+find . -type f -name "*.html" -exec sed -i 's/v0\.1\.0\.0004/v0.1.0.0005/g' {} +
+
+# Bump APP_VERSION in config
+sed -i "s/APP_VERSION = '0.1.0.0004'/APP_VERSION = '0.1.0.0005'/" js/config.js
+```
 
 ## File layout
 
 ```
 tucson-data/
-├── index.html              Workspace home
-├── roadmap.html            Roadmap timeline canvas (skeleton)
-├── portfolio.html          Strategic Portfolio View (skeleton)
+├── index.html              Workspace home — status strip, goal cards, activity feed
+├── roadmap.html            Roadmap timeline canvas (skeleton until chunk 1.4)
+├── portfolio.html          Strategic Portfolio View — six goal cards
 ├── css/
-│   ├── tokens.css          Design tokens — COT brand, status colors, sizing
-│   └── base.css            Reset, typography, layout, header band, primitives
+│   ├── tokens.css          COT brand colors, typography, spacing
+│   ├── base.css            Reset, layout, header band, primitives
+│   └── components.css      Goal cards, portfolio cards, activity rows
 ├── js/
 │   ├── config.js           Goals, statuses, fiscal calendar
-│   ├── data.js             Data access layer (Phase 1 reads seed.json;
-│   │                       Phase 2 swaps to live AGOL queries)
+│   ├── data.js             AGOL data access layer
 │   └── pages/
-│       ├── home.js         Wires status strip to live counts
+│       ├── home.js         Home page renderer
 │       ├── roadmap.js      (stub for chunk 1.4)
-│       └── portfolio.js    (stub for chunk 1.6)
-├── data/
-│   └── seed.json           Phase 1 placeholder data — 3 sample projects
-└── assets/                 (logo and brand assets go here)
+│       └── portfolio.js    Portfolio page renderer
+└── assets/
+    ├── tucson-data-logo.png    Full logo for header
+    ├── tucson-data-mark.png    Square mark
+    ├── favicon.png             16x16 PNG favicon
+    └── favicon.ico             Multi-size ICO favicon
 ```
 
-## Asset placeholders
-
-- The mark in the header is a CSS-drawn placeholder. Replace with the real COT mosaic SVG when available — drop it at `assets/mosaic.svg` and update `.header-mark` in `base.css` to render `<img src="assets/mosaic.svg">` instead of the placeholder div.
-
-## Architecture quick reference
+## Architecture
 
 - **System of record:** the Analytics Project Tracker (`psjohnso/analytics-tracker`). All editing happens there.
-- **This app:** read-only window. Visibility predicate `is_data_program=1 AND public_visibility=1` enforced in `js/data.js`.
-- **Phase 1 → Phase 2 swap:** only `js/data.js` changes. Pages and components call its public functions and don't care about the source.
+- **This app:** read-only window. Visibility predicate `is_data_program=1 AND (public_visibility=1 OR public_visibility IS NULL)` enforced server-side in the AGOL query.
+- **Data layer:** `js/data.js` queries the AGOL `projects_view` feature service directly with anonymous read.
 
-For the full architectural documentation, see `LEADERSHIP_APP_REFERENCE.md` in the project knowledge.
+For the full architectural documentation, see `LEADERSHIP_APP_REFERENCE.md` in the Claude.ai project knowledge.
 
 ## Versioning
 
-Follows the tracker's convention: `MAJOR.MINOR.PATCH.BUILD`. Update `APP_VERSION` in `js/config.js` and the footer text in each HTML page on every bump.
+Follows the tracker's convention: `MAJOR.MINOR.PATCH.BUILD`.
+
+- **MAJOR** for the kind of capability change that fundamentally changes what the app is
+- **MINOR** for new capabilities (a new page, a new behavior)
+- **PATCH** for focused improvement rounds within an existing feature
+- **BUILD** for single-commit fixes/tweaks

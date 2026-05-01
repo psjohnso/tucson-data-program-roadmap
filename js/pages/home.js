@@ -10,8 +10,8 @@ import {
   getProjectsByGoal,
   projectDisplayTitle,
   projectEditDate
-} from '../data.js';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js';
+} from '../data.js?v=4';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=4';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
