@@ -4,11 +4,11 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=4';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=4';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=5';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=5';
 
 const SAMPLE_LIMIT = 4;
-const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete'];
+const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
 
 async function renderPortfolio() {
   const target = document.getElementById('portfolio-grid');
@@ -43,6 +43,7 @@ async function renderPortfolio() {
             ${renderCount(counts['Future'],    'Future',    'var(--status-future)')}
             ${renderCount(counts['Idea'],      'Under review', 'var(--status-idea)')}
             ${renderCount(counts['Complete'],  'Shipped',   'var(--status-complete)')}
+            ${renderCount(counts['Canceled'],  'Cancelled', 'var(--status-canceled)')}
           </div>
           ${sampleProjects.length ? `
             <ul class="portfolio-card__projects">
@@ -94,7 +95,8 @@ const STATUS_COLOR_VAR = {
   'Idea':      'var(--status-idea)',
   'On Hold':   'var(--status-onhold)',
   'Waiting':   'var(--status-waiting)',
-  'Complete':  'var(--status-complete)'
+  'Complete':  'var(--status-complete)',
+  'Canceled':  'var(--status-canceled)'
 };
 
 function renderCount(n, label, color) {

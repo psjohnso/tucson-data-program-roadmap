@@ -35,6 +35,7 @@
   --status-idea:      #888780;
   --status-onhold:    #B4B2A9;
   --status-waiting:   #BA7517;
+  --status-canceled:  #B14545;  /* muted brick — readable but downplayed */
 
   /* ─── Today marker on timelines ───────────────────────────────────────── */
   --today: var(--cot-sunset-orange);

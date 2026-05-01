@@ -10,8 +10,8 @@ import {
   getProjectsByGoal,
   projectDisplayTitle,
   projectEditDate
-} from '../data.js?v=4';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=4';
+} from '../data.js?v=5';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=5';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -66,6 +66,7 @@ async function renderRoadmapViewsGrid() {
             ${counts['Future']    ? `<span class="goal-card__count" style="color: var(--status-future);">${counts['Future']} future</span>` : ''}
             ${counts['Idea']      ? `<span class="goal-card__count muted">${counts['Idea']} under review</span>` : ''}
             ${counts['Complete']  ? `<span class="goal-card__count muted">${counts['Complete']} shipped</span>` : ''}
+            ${counts['Canceled']  ? `<span class="goal-card__count" style="color: var(--status-canceled);">${counts['Canceled']} cancelled</span>` : ''}
             ${projects.length === 0 ? `<span class="goal-card__count faint">No projects yet</span>` : ''}
           </div>
         </a>`;
@@ -116,7 +117,8 @@ const STATUS_COLOR_VAR = {
   'Idea':      'var(--status-idea)',
   'On Hold':   'var(--status-onhold)',
   'Waiting':   'var(--status-waiting)',
-  'Complete':  'var(--status-complete)'
+  'Complete':  'var(--status-complete)',
+  'Canceled':  'var(--status-canceled)'
 };
 
 /* ─── Helpers ───────────────────────────────────────────────────────────── */
