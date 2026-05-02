@@ -4,9 +4,9 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=10';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=10';
-import { openProjectModal } from '../modal.js?v=10';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=11';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=11';
+import { openProjectModal } from '../modal.js?v=11';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
@@ -34,7 +34,7 @@ async function renderPortfolio() {
       return `
         <article class="portfolio-card" style="--goal-accent: ${goal.color};">
           <header class="portfolio-card__header">
-            <h2 class="portfolio-card__title">${escape(goal.short)}</h2>
+            <h2 class="portfolio-card__title"><a href="goal.html?goal=${encodeURIComponent(goal.slug)}">${escape(goal.short)} →</a></h2>
             <div class="portfolio-card__count-total">${projects.length}</div>
           </header>
           <p class="portfolio-card__desc">${escape(goal.description)}</p>

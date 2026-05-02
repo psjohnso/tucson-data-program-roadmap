@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tucson DATA · Strategic portfolio</title>
-  <meta name="description" content="The data program portfolio rolled up by Data Program Goal.">
+  <title>Tucson DATA · Goal detail</title>
+  <meta name="description" content="A focused view of one Data Program goal — the projects under it, status, and what we're trying to achieve.">
 
   <link rel="icon" href="assets/favicon.ico?v=11" sizes="any">
   <link rel="icon" type="image/png" href="assets/favicon.png?v=11">
@@ -27,8 +27,8 @@
       </a>
       <div class="header-text">
         <div class="header-eyebrow">City of Tucson · Information Technology</div>
-        <h1 class="header-title">Portfolio by data program goal</h1>
-        <p class="header-subtitle">Six goals, the projects that ladder under each. Click a goal card to drill into its full roadmap.</p>
+        <h1 class="header-title">Data program portfolio</h1>
+        <p class="header-subtitle">A live view of the data team's work advancing the city's data program.</p>
       </div>
     </div>
     <nav class="topnav" aria-label="Primary navigation">
@@ -43,13 +43,23 @@
   <main class="page">
     <div class="container">
 
-      <section style="margin-bottom: var(--space-10);">
-        <div class="portfolio-grid" id="portfolio-grid">
+      <div id="goal-header">
+        <p class="muted" style="padding: var(--space-4);">Loading…</p>
+      </div>
+
+      <section style="margin-top: var(--space-8); margin-bottom: var(--space-8);">
+        <div class="section-heading">Status</div>
+        <div id="goal-counts">
           <p class="muted">Loading…</p>
         </div>
       </section>
 
-      <section id="orphans"></section>
+      <section>
+        <div class="section-heading">Projects</div>
+        <div id="goal-projects">
+          <p class="muted">Loading…</p>
+        </div>
+      </section>
 
     </div>
   </main>
@@ -61,6 +71,6 @@
     </div>
   </footer>
 
-  <script type="module" src="js/pages/portfolio.js?v=11"></script>
+  <script type="module" src="js/pages/goal.js?v=11"></script>
 </body>
 </html>

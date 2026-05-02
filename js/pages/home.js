@@ -12,9 +12,9 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=10';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=10';
-import { openProjectModal } from '../modal.js?v=10';
+} from '../data.js?v=11';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=11';
+import { openProjectModal } from '../modal.js?v=11';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -60,7 +60,7 @@ async function renderRoadmapViewsGrid() {
       }, {});
 
       return `
-        <a class="goal-card" href="roadmap.html?goal=${encodeURIComponent(goal.slug)}" style="--goal-accent: ${goal.color};">
+        <a class="goal-card" href="goal.html?goal=${encodeURIComponent(goal.slug)}" style="--goal-accent: ${goal.color};">
           <div class="goal-card__title">${escape(goal.short)}</div>
           <div class="goal-card__desc">${escape(goal.description)}</div>
           <div class="goal-card__counts">
