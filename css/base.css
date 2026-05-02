@@ -16,6 +16,11 @@ html {
   background: var(--bg-page);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* Always reserve space for the vertical scrollbar so layout width stays
+     identical whether the page is tall (home) or short (goal pages). Prevents
+     horizontal shift of logo/title when navigating between pages of different
+     heights. */
+  scrollbar-gutter: stable;
 }
 
 body {
