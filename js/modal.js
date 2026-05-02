@@ -25,7 +25,7 @@ import {
   projectActualEndDate,
   projectGoals,
   projectInitiatives
-} from './data.js?v=14';
+} from './data.js?v=15';
 
 let modalEl = null;
 let lastFocusedEl = null;

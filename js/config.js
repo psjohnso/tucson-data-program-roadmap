@@ -2,7 +2,7 @@
    config.js — shared constants: goals, statuses, fiscal calendar
    ───────────────────────────────────────────────────────────────────────── */
 
-export const APP_VERSION = '0.1.0.0014';
+export const APP_VERSION = '0.1.0.0015';
 
 // Six Data Program goals — values match what's stored in the tracker's
 // dp_goal field. Keep label text in sync with the tracker's domain values.

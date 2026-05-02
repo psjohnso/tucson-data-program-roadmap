@@ -12,9 +12,9 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=14';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=14';
-import { openProjectModal } from '../modal.js?v=14';
+} from '../data.js?v=15';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=15';
+import { openProjectModal } from '../modal.js?v=15';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
