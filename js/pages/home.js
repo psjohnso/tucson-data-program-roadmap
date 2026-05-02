@@ -12,9 +12,10 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=17';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=17';
-import { openProjectModal } from '../modal.js?v=17';
+} from '../data.js?v=18';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=18';
+import { openProjectModal } from '../modal.js?v=18';
+import { startLoading, showError } from '../ui-state.js?v=18';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -32,8 +33,11 @@ async function renderStatusStrip() {
     setStat('complete',  shipped);
   } catch (err) {
     console.error('Failed to render status strip:', err);
-    document.querySelectorAll('[data-stat]').forEach(el => { el.textContent = '?'; });
-    showError('status-strip-error', err);
+    document.querySelectorAll('[data-stat]').forEach(el => { el.textContent = '—'; });
+    const slot = document.getElementById('status-strip-error');
+    if (slot) {
+      slot.textContent = "Couldn't load counts. The page sections below will retry independently.";
+    }
   }
 }
 
@@ -48,8 +52,11 @@ async function renderRoadmapViewsGrid() {
   const target = document.getElementById('roadmap-views');
   if (!target) return;
 
+  const loading = startLoading(target, 'goal-grid');
+
   try {
     const groups = await getProjectsByGoal();
+    loading.cancel();
 
     const cards = DATA_PROGRAM_GOALS.map(goal => {
       const projects = groups[goal.value] || [];
@@ -77,8 +84,14 @@ async function renderRoadmapViewsGrid() {
 
     target.innerHTML = cards;
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render roadmap views grid:', err);
-    target.innerHTML = `<p class="muted">Couldn't load goal data. ${escape(err.message)}</p>`;
+    showError(target, {
+      title: "Couldn't load goal data",
+      message: 'There was a problem reaching the data service. This is usually temporary.',
+      error: err,
+      onRetry: renderRoadmapViewsGrid
+    });
   }
 }
 
@@ -88,8 +101,11 @@ async function renderRecentlyShipped() {
   const target = document.getElementById('recently-shipped');
   if (!target) return;
 
+  const loading = startLoading(target, 'feed', { rows: 6 });
+
   try {
     const shipped = await getRecentlyShipped({ limit: 6 });
+    loading.cancel();
     if (!shipped.length) {
       target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing shipped yet.</p>`;
       return;
@@ -108,8 +124,13 @@ async function renderRecentlyShipped() {
         </div>`;
     }).join('');
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render recently shipped:', err);
-    target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Couldn't load shipped projects.</p>`;
+    showError(target, {
+      title: "Couldn't load shipped projects",
+      error: err,
+      onRetry: renderRecentlyShipped
+    });
   }
 }
 
@@ -119,8 +140,11 @@ async function renderComingUp() {
   const target = document.getElementById('coming-up');
   if (!target) return;
 
+  const loading = startLoading(target, 'feed', { rows: 6 });
+
   try {
     const coming = await getComingUp({ limit: 6 });
+    loading.cancel();
     if (!coming.length) {
       target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing scheduled in the near term.</p>`;
       return;
@@ -139,8 +163,13 @@ async function renderComingUp() {
         </div>`;
     }).join('');
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render coming up:', err);
-    target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Couldn't load upcoming projects.</p>`;
+    showError(target, {
+      title: "Couldn't load upcoming projects",
+      error: err,
+      onRetry: renderComingUp
+    });
   }
 }
 
@@ -180,11 +209,6 @@ function formatRelativeDate(date) {
     return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
   }
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
-
-function showError(slotId, err) {
-  const slot = document.getElementById(slotId);
-  if (slot) slot.textContent = `Couldn't load: ${err.message || err}`;
 }
 
 /* ─── Boot ──────────────────────────────────────────────────────────────── */

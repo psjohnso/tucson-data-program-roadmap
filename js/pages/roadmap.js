@@ -23,9 +23,10 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=17';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=17';
-import { openProjectModal } from '../modal.js?v=17';
+} from '../data.js?v=18';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=18';
+import { openProjectModal } from '../modal.js?v=18';
+import { startLoading, showError } from '../ui-state.js?v=18';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
@@ -154,12 +155,15 @@ async function renderTimeline() {
   const target = document.getElementById('timeline');
   if (!target) return;
 
+  const loading = startLoading(target, 'timeline');
+
   try {
     const { start: windowStart, end: windowEnd } = defaultWindow();
 
     // Fetch all projects (we filter for status here so the lane counts can
     // include all visible projects, while only non-Complete ones get bars)
     const allProjects = await getProjects();
+    loading.cancel();
     const visibleProjects = allProjects.filter(p => VISIBLE_STATUSES.has(p.status));
 
     // Group by lane
@@ -236,8 +240,13 @@ async function renderTimeline() {
 
     attachTooltipBehavior(target);
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render timeline:', err);
-    target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Couldn't load timeline data. ${escape(err.message || err)}</p>`;
+    showError(target, {
+      title: "Couldn't load timeline data",
+      error: err,
+      onRetry: renderTimeline
+    });
   }
 }
 

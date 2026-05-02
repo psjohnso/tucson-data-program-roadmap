@@ -817,3 +817,176 @@ body.modal-open { overflow: hidden; }
   outline-offset: 2px;
   border-radius: 2px;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Loading skeletons & error states (chunk 1.8/1.9)
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Subtle pulsing background — used for all skeleton shapes.
+   The shimmer keeps "loading" visually distinct from "broken/empty". */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+
+.skel {
+  background: var(--bg-section);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+/* Skeleton for the metric/status strip used on home + goal pages */
+.skel-status-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-3);
+}
+.skel-metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.skel-metric-card .skel:first-child {
+  height: 12px;
+  width: 70%;
+  margin-bottom: var(--space-2);
+}
+.skel-metric-card .skel:last-child {
+  height: 32px;
+  width: 50%;
+}
+
+/* Skeleton for a generic two-column grid (goal cards, portfolio cards) */
+.skel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+.skel-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--bg-section);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+.skel-card .skel { margin-bottom: var(--space-2); }
+.skel-card .skel:nth-child(1) { height: 18px; width: 50%; }
+.skel-card .skel:nth-child(2) { height: 14px; width: 90%; }
+.skel-card .skel:nth-child(3) { height: 14px; width: 75%; margin-bottom: var(--space-3); }
+.skel-card .skel:nth-child(4) { height: 12px; width: 40%; margin-bottom: 0; }
+
+/* Skeleton for an activity feed (rows of date/title/status) */
+.skel-feed {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.skel-feed-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 60px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.skel-feed-row:last-child { border-bottom: none; }
+.skel-feed-row .skel { height: 14px; }
+.skel-feed-row .skel:first-child  { width: 80%; }
+.skel-feed-row .skel:nth-child(2) { width: 100%; }
+.skel-feed-row .skel:last-child   { width: 70%; }
+
+/* Skeleton for the timeline canvas — empty SVG with placeholder lanes */
+.skel-timeline {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--space-2);
+}
+.skel-timeline__labels { display: flex; flex-direction: column; gap: var(--space-3); }
+.skel-timeline__bars   { display: flex; flex-direction: column; gap: var(--space-3); }
+.skel-timeline__labels .skel { height: 22px; width: 70%; }
+.skel-timeline__bars .skel { height: 22px; }
+.skel-timeline__bars .skel:nth-child(1) { width: 60%; margin-left: 8%; }
+.skel-timeline__bars .skel:nth-child(2) { width: 45%; margin-left: 22%; }
+.skel-timeline__bars .skel:nth-child(3) { width: 38%; margin-left: 12%; }
+.skel-timeline__bars .skel:nth-child(4) { width: 55%; margin-left: 28%; }
+.skel-timeline__bars .skel:nth-child(5) { width: 30%; margin-left: 18%; }
+
+/* "Still loading…" hint that appears after a few seconds — reassures
+   the user that the app didn't freeze, the request is just slow. */
+.loading-hint {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: var(--space-3) 0;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.loading-hint.visible { opacity: 1; }
+
+/* Error block with retry button — used wherever a fetch failed */
+.fetch-error {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  text-align: center;
+}
+.fetch-error__icon {
+  font-size: 24px;
+  margin-bottom: var(--space-2);
+  display: block;
+  opacity: 0.5;
+}
+.fetch-error__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--cot-innovation-blue);
+  margin-bottom: var(--space-1);
+}
+.fetch-error__message {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  max-width: 50ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.fetch-error__details {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  background: var(--bg-section);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  margin: var(--space-3) auto;
+  max-width: 60ch;
+  word-break: break-word;
+}
+.fetch-error__retry {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-on-dark);
+  background: var(--cot-innovation-blue);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-5);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+.fetch-error__retry:hover { background: var(--cot-night-sky); }
+.fetch-error__retry:focus {
+  outline: 2px solid var(--cot-sunset-orange);
+  outline-offset: 2px;
+}

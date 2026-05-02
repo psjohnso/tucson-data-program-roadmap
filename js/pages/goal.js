@@ -10,9 +10,10 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=17';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=17';
-import { openProjectModal } from '../modal.js?v=17';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=18';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=18';
+import { openProjectModal } from '../modal.js?v=18';
+import { startLoading, showError } from '../ui-state.js?v=18';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',
@@ -66,8 +67,12 @@ async function renderGoal() {
   }
 
   // Body content (counts + project list)
+  const listEl = document.getElementById('goal-projects');
+  const loading = startLoading(listEl, 'project-list', { rows: 8 });
+
   try {
     const groups = await getProjectsByGoal();
+    loading.cancel();
     const projects = groups[goal.value] || [];
 
     const counts = projects.reduce((acc, p) => {
@@ -80,7 +85,6 @@ async function renderGoal() {
       countsEl.innerHTML = renderCountsStrip(counts);
     }
 
-    const listEl = document.getElementById('goal-projects');
     if (listEl) {
       if (projects.length === 0) {
         listEl.innerHTML = `<p class="muted prose">No projects are currently tagged to this goal.</p>`;
@@ -89,9 +93,15 @@ async function renderGoal() {
       }
     }
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render goal detail:', err);
-    const listEl = document.getElementById('goal-projects');
-    if (listEl) listEl.innerHTML = `<p class="muted">Couldn't load project list. ${escape(err.message || err)}</p>`;
+    if (listEl) {
+      showError(listEl, {
+        title: "Couldn't load project list",
+        error: err,
+        onRetry: renderGoal
+      });
+    }
   }
 }
 

@@ -4,9 +4,10 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=17';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=17';
-import { openProjectModal } from '../modal.js?v=17';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=18';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=18';
+import { openProjectModal } from '../modal.js?v=18';
+import { startLoading, showError } from '../ui-state.js?v=18';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
@@ -15,8 +16,11 @@ async function renderPortfolio() {
   const target = document.getElementById('portfolio-grid');
   if (!target) return;
 
+  const loading = startLoading(target, 'goal-grid');
+
   try {
     const groups = await getProjectsByGoal();
+    loading.cancel();
 
     target.innerHTML = DATA_PROGRAM_GOALS.map(goal => {
       const projects = groups[goal.value] || [];
@@ -84,8 +88,13 @@ async function renderPortfolio() {
       }
     }
   } catch (err) {
+    loading.cancel();
     console.error('Failed to render portfolio:', err);
-    target.innerHTML = `<p class="muted">Couldn't load portfolio data. ${escape(err.message || err)}</p>`;
+    showError(target, {
+      title: "Couldn't load portfolio data",
+      error: err,
+      onRetry: renderPortfolio
+    });
   }
 }
 
