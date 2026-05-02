@@ -2,21 +2,28 @@
 
 Leadership-facing window onto the City of Tucson Data Team's data program portfolio. Reads live from the same AGOL feature services the team's internal Analytics Project Tracker writes to. Read-only.
 
-**Current version:** 0.1.0.0004
+**Current version:** 1.0.0.0000
 
 ---
 
 ## Status
 
-- ✅ Chunk 1.1 — project skeleton with COT brand
-- ✅ Chunk 1.2 — data layer wired to live AGOL feature service
-- ✅ Chunk 1.3 — workspace home with status strip, roadmap views grid, recent activity feed
-- ✅ Chunk 1.6 — strategic portfolio view with goal cards
-- ⏳ Chunk 1.4 — roadmap timeline canvas (next)
-- ⏳ Chunk 1.5 — item detail modal
-- ⏳ Chunk 1.7 — first scoped demo link
+**Phase 1 complete.** v1.0.0.0000 is the production launch release.
 
-See the project documentation in Claude.ai for the full plan.
+- ✅ Chunk 1.1 — project skeleton with COT brand
+- ✅ Chunk 1.2 — live data layer (AGOL feature service)
+- ✅ Chunk 1.3 — workspace home (status strip, goal cards, recently shipped + coming up)
+- ✅ Chunk 1.4 — roadmap timeline canvas
+- ✅ Chunk 1.5 — item detail modal
+- ✅ Chunk 1.6 — strategic portfolio view
+- ✅ Chunk 1.7 — goal detail page
+- ✅ Chunk 1.8/1.9 — loading skeletons + error states with retry
+- ✅ Chunk 1.10 — mobile pass
+- ✅ Chunk 1.11 — production deploy checklist + Open Graph + sitemap
+
+See `PRODUCTION_DEPLOY_CHECKLIST.md` for the launch runbook.
+
+See the project documentation in Claude.ai for the full plan and Phase 2 ideas.
 
 ## Run locally
 
@@ -61,7 +68,7 @@ find . -type f \( -name "*.html" -o -name "*.js" \) -exec sed -i 's/?v=4/?v=5/g'
 find . -type f -name "*.html" -exec sed -i 's/v0\.1\.0\.0004/v0.1.0.0005/g' {} +
 
 # Bump APP_VERSION in config
-sed -i "s/APP_VERSION = '0.1.0.0004'/APP_VERSION = '0.1.0.0005'/" js/config.js
+sed -i "s/APP_VERSION = '1.0.0.0000'/APP_VERSION = '0.1.0.0005'/" js/config.js
 ```
 
 ## File layout

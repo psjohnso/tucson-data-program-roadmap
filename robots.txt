@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://psjohnso.github.io/tucson-data-program-roadmap/sitemap.xml

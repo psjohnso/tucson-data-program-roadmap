@@ -23,10 +23,10 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=19';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=19';
-import { openProjectModal } from '../modal.js?v=19';
-import { startLoading, showError } from '../ui-state.js?v=19';
+} from '../data.js?v=21';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=21';
+import { openProjectModal } from '../modal.js?v=21';
+import { startLoading, showError } from '../ui-state.js?v=21';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
