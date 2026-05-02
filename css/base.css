@@ -111,6 +111,11 @@ a:hover { text-decoration: underline; }
   margin-top: var(--space-2);
   line-height: var(--leading-normal);
   max-width: 60ch;
+  /* Lock to a single line. Long copy gets ellipsis; this keeps the chrome
+     stable across pages with different subtitle lengths. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
