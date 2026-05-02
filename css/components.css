@@ -754,17 +754,44 @@ body.modal-open { overflow: hidden; }
 
 /* ─── Goal page navigation enhancements (chunk 1.7+) ────────────────────── */
 
-/* Sub-label under the Portfolio nav link when on a goal detail page.
-   Stacks below the main label, smaller and lighter, signaling depth without
-   restructuring the nav. */
-.topnav__sublabel {
-  display: block;
-  font-size: 10px;
+/* Context band — sits below the topnav on the goal detail page. Holds the
+   active goal name + a "back to all goals" link. Single fixed-height row, so
+   it never makes the rest of the chrome feel like it's shifting between pages. */
+.goal-context-band {
+  background: var(--bg-section);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.goal-context-band__inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+}
+.goal-context-band__current {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--cot-innovation-blue);
+  font-weight: var(--weight-bold);
+}
+.goal-context-band__accent {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--goal-accent, var(--text-tertiary));
+  display: inline-block;
+}
+.goal-context-band__label {
+  color: var(--text-secondary);
   font-weight: var(--weight-regular);
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: var(--text-on-dark-muted);
-  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  font-size: var(--text-xs);
 }
 
 /* Back link above the goal narrative card.

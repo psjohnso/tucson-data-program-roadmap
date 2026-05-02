@@ -23,9 +23,9 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=12';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=12';
-import { openProjectModal } from '../modal.js?v=12';
+} from '../data.js?v=13';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=13';
+import { openProjectModal } from '../modal.js?v=13';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 

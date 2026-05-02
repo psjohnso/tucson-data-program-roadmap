@@ -60,13 +60,16 @@ a:hover { text-decoration: underline; }
   margin: 0 auto;
   padding: var(--space-5) var(--space-6);
   display: flex;
-  align-items: center;
+  align-items: flex-start;  /* anchor to top so eyebrow/title don't drift with subtitle length */
   gap: var(--space-8);
+  min-height: 132px;        /* lock band height so logo position is identical across pages */
 }
 
 .header-logo {
   flex-shrink: 0;
   display: block;
+  /* Keep the logo at a consistent vertical position rather than centered in
+     a flex container whose height varies with subtitle copy. */
 }
 
 .header-logo img {
@@ -75,7 +78,12 @@ a:hover { text-decoration: underline; }
   display: block;
 }
 
-.header-text { flex: 1; min-width: 0; }
+.header-text {
+  flex: 1;
+  min-width: 0;
+  /* Pin the eyebrow and title to a consistent Y; subtitle flows below */
+  padding-top: 4px;
+}
 
 .header-eyebrow {
   font-family: var(--font-sans);
