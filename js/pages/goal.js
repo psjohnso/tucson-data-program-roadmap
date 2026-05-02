@@ -10,9 +10,9 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=11';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=11';
-import { openProjectModal } from '../modal.js?v=11';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=12';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=12';
+import { openProjectModal } from '../modal.js?v=12';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',
@@ -46,6 +46,13 @@ async function renderGoal() {
 
   // Set the page title and tab title
   document.title = `${goal.short} · Tucson DATA`;
+
+  // Add the goal name as a sub-label under the Portfolio nav link, so the
+  // user has visual context that they're inside a Portfolio drill-down.
+  const portfolioNav = document.getElementById('topnav-portfolio');
+  if (portfolioNav) {
+    portfolioNav.innerHTML = `Portfolio<span class="topnav__sublabel">${escape(goal.short)}</span>`;
+  }
 
   // Header
   const headerEl = document.getElementById('goal-header');

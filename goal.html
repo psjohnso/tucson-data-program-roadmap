@@ -6,17 +6,17 @@
   <title>Tucson DATA · Goal detail</title>
   <meta name="description" content="A focused view of one Data Program goal — the projects under it, status, and what we're trying to achieve.">
 
-  <link rel="icon" href="assets/favicon.ico?v=11" sizes="any">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=11">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=11">
+  <link rel="icon" href="assets/favicon.ico?v=12" sizes="any">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=12">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=12">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/tokens.css?v=11">
-  <link rel="stylesheet" href="css/base.css?v=11">
-  <link rel="stylesheet" href="css/components.css?v=11">
+  <link rel="stylesheet" href="css/tokens.css?v=12">
+  <link rel="stylesheet" href="css/base.css?v=12">
+  <link rel="stylesheet" href="css/components.css?v=12">
 </head>
 <body>
 
@@ -35,13 +35,17 @@
       <div class="topnav__inner">
         <a href="index.html">Home</a>
         <a href="roadmap.html">Roadmap</a>
-        <a href="portfolio.html" aria-current="page">Portfolio</a>
+        <a href="portfolio.html" aria-current="page" id="topnav-portfolio">Portfolio</a>
       </div>
     </nav>
   </header>
 
   <main class="page">
     <div class="container">
+
+      <a href="portfolio.html" class="back-link" id="back-link">
+        <span aria-hidden="true">←</span> Back to all goals
+      </a>
 
       <div id="goal-header">
         <p class="muted" style="padding: var(--space-4);">Loading…</p>
@@ -66,11 +70,11 @@
 
   <footer class="page-footer">
     <div class="container">
-      <span>Tucson DATA · v0.1.0.0011</span>
+      <span>Tucson DATA · v0.1.0.0012</span>
       <span class="muted">City of Tucson Information Technology Department</span>
     </div>
   </footer>
 
-  <script type="module" src="js/pages/goal.js?v=11"></script>
+  <script type="module" src="js/pages/goal.js?v=12"></script>
 </body>
 </html>
