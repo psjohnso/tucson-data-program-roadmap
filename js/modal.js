@@ -25,7 +25,7 @@ import {
   projectActualEndDate,
   projectGoals,
   projectInitiatives
-} from './data.js?v=16';
+} from './data.js?v=17';
 
 let modalEl = null;
 let lastFocusedEl = null;
@@ -133,13 +133,19 @@ function renderProjectBody(p) {
   const statusColor = STATUS_COLORS[p.status] || 'var(--text-tertiary)';
   const statusKey = STATUS_LABEL[p.status] || (p.status || 'Unknown');
 
-  const trackerUrl = `https://psjohnso.github.io/analytics-tracker/#/project/${p.ObjectId}`;
+  // Tracker URL — uses project_number (P-NNN) which is stable and human-meaningful.
+  // Falls back to ObjectId if a project somehow lacks a project_number, but
+  // every Data Program project has one today.
+  const trackerUrl = p.project_number
+    ? `https://psjohnso.github.io/analytics-tracker/?project=${encodeURIComponent(p.project_number)}`
+    : `https://psjohnso.github.io/analytics-tracker/?objectid=${p.ObjectId}`;
 
   return `
     <div class="modal__header">
       <div class="modal__eyebrow">
         <span class="modal__status-dot" style="background: ${statusColor};" aria-hidden="true"></span>
         <span style="color: ${statusColor};">${escape(statusKey)}</span>
+        ${p.project_number ? ` · <span>${escape(p.project_number)}</span>` : ''}
         ${p.partner_dept ? ` · <span>${escape(p.partner_dept)}</span>` : ''}
       </div>
       <h2 id="modal-title" class="modal__title">${escape(title)}</h2>
