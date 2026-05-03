@@ -9,7 +9,7 @@
    single-commit BUILD tweaks are folded into the next PATCH summary).
    ───────────────────────────────────────────────────────────────────────── */
 
-import { startLoading, showError } from '../ui-state.js?v=23';
+import { startLoading, showError } from '../ui-state.js?v=24';
 
 const COMMITS_URL    = 'https://api.github.com/repos/psjohnso/tucson-data-program-roadmap/commits?per_page=100';
 const LEADERSHIP_URL = 'releases.json';

@@ -1058,6 +1058,30 @@ body.modal-open { overflow: hidden; }
   border-left: 3px solid var(--border-subtle);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   City of Tucson IT logo — institutional attribution. Appears in the header
+   band (right side, paired with the Tucson DATA mark) and in the footer
+   (right side, replacing the department-name text). The horizontal variant
+   is used in both spots. Pinned to the top of the band with the same 4px
+   nudge as .header-text so it visually aligns with the mosaic icon.
+   ───────────────────────────────────────────────────────────────────────── */
+.header-cot-logo {
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+.header-cot-logo img {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+
+.footer-cot-logo { display: inline-flex; align-items: center; }
+.footer-cot-logo img { height: 28px; width: auto; display: block; }
+
+@media (max-width: 700px) {
+  .header-cot-logo img { height: 40px; }
+}
+
 /* "Still loading…" hint that appears after a few seconds — reassures
    the user that the app didn't freeze, the request is just slow. */
 .loading-hint {
