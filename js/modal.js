@@ -25,8 +25,8 @@ import {
   projectActualEndDate,
   projectGoals,
   projectInitiatives
-} from './data.js?v=27';
-import { skeletonHtml } from './ui-state.js?v=27';
+} from './data.js?v=28';
+import { skeletonHtml } from './ui-state.js?v=28';
 
 let modalEl = null;
 let lastFocusedEl = null;

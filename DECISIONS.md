@@ -94,6 +94,20 @@ The team is also planning to retire the older DP-XXX numbering scheme; project_n
 
 ---
 
+## Multi-goal projects: every goal they touch (multi-count), not primary only
+
+**Decision:** `getProjectsByGoal()` puts a project tagged with multiple Data Program Goals into *every* goal's bucket — not just its primary. A project tagged Governance + Quality with primary=Quality appears under both the Governance card and the Quality card. The roadmap timeline (which uses `laneGoalFor()` directly) still single-buckets by primary goal so each project shows on exactly one lane.
+
+**Why:**
+
+- Status-strip filtering (and the global filter system in general) checks `projectGoals(p)` — multi-tag matching. Pre-v1.2.0.0002 the home/portfolio goal cards used `laneGoalFor()` (primary only), producing a different count than the strip for the same goal — confusing under filter.
+- Multi-count answers the framing leadership cares about: "how many projects touch each goal?"
+- The trade-off — totals across goal cards exceed total projects — is acceptable; each card answers a per-goal question, not a portfolio-share question.
+
+**Implication:** Goal cards on home, portfolio, and goal-detail use multi-count via `projectGoals(p)`. The roadmap timeline keeps single-bucketing via `laneGoalFor()` for visual clarity (one bar per project per timeline). New views that sum projects across goals must remember that totals will exceed the project count.
+
+---
+
 ## `js/data.js` is the sole swap point for live ↔ stub data
 
 **Decision:** Every AGOL fetch goes through functions in `js/data.js`. No page-level fetches.

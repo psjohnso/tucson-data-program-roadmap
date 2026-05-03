@@ -24,12 +24,12 @@
                                     preserving any existing query params on href
 
    Usage:
-     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=27';
+     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=28';
      const filtered = applyFilters(allProjects);
      subscribe(() => rerender());
    ───────────────────────────────────────────────────────────────────────── */
 
-import { GOAL_BY_VALUE } from './config.js?v=27';
+import { GOAL_BY_VALUE } from './config.js?v=28';
 
 const FILTER_KEYS = ['status', 'goal', 'dept'];
 const subscribers = new Set();

@@ -85,27 +85,6 @@ Right answer probably depends on whether the team treats `working_due` as a hard
 
 ---
 
-## Open dual-counting question
-
-### Goal lane assignment for multi-goal projects
-
-A project can be tagged to multiple Data Program Goals (`dp_goal_*` boolean fields). The home page goal cards count multi-goal projects in *every* goal they touch, while the goal detail page counts only by `laneGoalFor()` (which uses `primary_dp_goal`, falling back to first goal in priority order).
-
-Both views are valid:
-
-- Home view answers "how many projects touch each goal"
-- Goal detail view answers "what's primarily a Governance project"
-
-But they produce different counts for the same goal, which can confuse leadership.
-
-Options:
-
-- **Document the difference** — add a tooltip or footnote on each view explaining the count semantics
-- **Reconcile to a single rule** — pick one (probably the laneGoalFor rule) and use it everywhere
-- **Show both** — on goal cards, "29 total · 12 primary"
-
-Has not yet been escalated to the team. Probably worth a short conversation.
-
 ---
 
 ## Phase 2 candidates (deferred, no priority order)

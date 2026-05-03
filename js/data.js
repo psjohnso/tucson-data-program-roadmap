@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=27';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=28';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -113,15 +113,34 @@ export async function getShippedCount({ fiscalYear, filters = {} } = {}) {
   }).length;
 }
 
-/** Return projects grouped by their lane goal (primary_dp_goal, falling back
- *  to the first dp_goal). Projects without any goal end up under "Unclassified". */
+/** Return projects grouped by every goal they touch (multi-tag).
+ *
+ *  A project tagged Governance + Quality lands in BOTH the Governance and
+ *  Quality buckets — the "how many projects touch this goal?" framing.
+ *  This makes per-goal counts consistent with status-strip filtering and
+ *  with the matchesFilters goal predicate (which also checks projectGoals).
+ *
+ *  Side effect: totals across all goal buckets sum to MORE than the total
+ *  number of projects, because multi-tagged projects are counted in every
+ *  goal they touch. That's expected and correct for this view's question.
+ *
+ *  Projects with no goals tagged end up under "Unclassified".
+ *
+ *  Note: the roadmap timeline still uses laneGoalFor() directly (single
+ *  primary-goal bucket per project) to keep each project on exactly one
+ *  lane — that's a separate decision driven by visual clarity. */
 export async function getProjectsByGoal({ filters = {} } = {}) {
   const projects = await getProjects({ filters });
   const groups = {};
   for (const p of projects) {
-    const goal = laneGoalFor(p);
-    if (!groups[goal]) groups[goal] = [];
-    groups[goal].push(p);
+    const goals = projectGoals(p);
+    if (goals.length === 0) {
+      (groups['Unclassified'] = groups['Unclassified'] || []).push(p);
+      continue;
+    }
+    for (const g of goals) {
+      (groups[g] = groups[g] || []).push(p);
+    }
   }
   return groups;
 }
