@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear } from './config.js?v=26';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=27';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -161,7 +161,12 @@ export async function getComingUp({ limit = 6, filters = {} } = {}) {
 
 function matchesFilters(p, filters) {
   if (filters.status?.length && !filters.status.includes(p.status)) return false;
-  if (filters.goal?.length && !projectGoals(p).some(g => filters.goal.includes(g))) return false;
+  if (filters.goal?.length) {
+    // filters.goal is slugs (URL form). projectGoals returns AGOL value strings.
+    // Map slugs to values once, then check overlap.
+    const wanted = filters.goal.map(slug => GOAL_BY_SLUG[slug]?.value).filter(Boolean);
+    if (!projectGoals(p).some(g => wanted.includes(g))) return false;
+  }
   if (filters.dept?.length && !filters.dept.includes(p.partner_dept)) return false;
   if (filters.itInitiative?.length && !projectInitiatives(p).some(i => filters.itInitiative.includes(i))) return false;
   if (filters.from && projectEndDate(p) && projectEndDate(p) < filters.from) return false;
