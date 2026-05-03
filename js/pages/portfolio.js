@@ -4,11 +4,11 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=30';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=30';
-import { openProjectModal } from '../modal.js?v=30';
-import { startLoading, showError } from '../ui-state.js?v=30';
-import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=30';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=31';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=31';
+import { openProjectModal } from '../modal.js?v=31';
+import { startLoading, showError } from '../ui-state.js?v=31';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=31';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];

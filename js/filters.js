@@ -24,12 +24,12 @@
                                     preserving any existing query params on href
 
    Usage:
-     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=30';
+     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=31';
      const filtered = applyFilters(allProjects);
      subscribe(() => rerender());
    ───────────────────────────────────────────────────────────────────────── */
 
-import { GOAL_BY_VALUE } from './config.js?v=30';
+import { GOAL_BY_VALUE } from './config.js?v=31';
 
 const FILTER_KEYS = ['status', 'goal', 'dept'];
 const subscribers = new Set();
@@ -116,17 +116,34 @@ export function applyFilters(projects, opts = {}) {
 
 /** Return an href with current filter params merged in. Preserves any
  *  query params already on the href (e.g. goal.html?goal=governance keeps
- *  its goal param while ?status, ?dept get appended from the filter state). */
+ *  its goal param while ?status, ?dept get appended from the filter state).
+ *
+ *  Implementation note: deliberately does NOT use new URL() because that
+ *  resolves relative paths against an origin, which on GitHub Pages strips
+ *  the repo subpath (index.html → /index.html → 404). We treat the href as
+ *  an opaque string and only touch its query part. */
 export function appendFiltersToHref(href) {
-  const url = new URL(href, window.location.origin);
-  // Don't overwrite a goal param that's already on the link — page nav like
-  // "click governance card" sets ?goal=governance and that takes precedence.
-  const existingGoal = url.searchParams.has('goal');
+  if (!href) return href;
+
+  const hashIdx = href.indexOf('#');
+  const hash = hashIdx >= 0 ? href.slice(hashIdx) : '';
+  const noHash = hashIdx >= 0 ? href.slice(0, hashIdx) : href;
+
+  const queryIdx = noHash.indexOf('?');
+  const path = queryIdx >= 0 ? noHash.slice(0, queryIdx) : noHash;
+  const queryStr = queryIdx >= 0 ? noHash.slice(queryIdx + 1) : '';
+
+  const params = new URLSearchParams(queryStr);
+  // Don't overwrite a goal param already on the link — clicking a goal card
+  // sets ?goal=<slug> explicitly and that takes precedence over filter state.
+  const existingGoal = params.has('goal');
   for (const k of FILTER_KEYS) {
     if (k === 'goal' && existingGoal) continue;
-    if (state[k]?.length) url.searchParams.set(k, state[k].join(','));
+    if (state[k]?.length) params.set(k, state[k].join(','));
   }
-  return url.pathname + (url.search ? url.search : '') + url.hash;
+
+  const newQuery = params.toString();
+  return path + (newQuery ? '?' + newQuery : '') + hash;
 }
 
 /* ─── Internals ─────────────────────────────────────────────────────────── */

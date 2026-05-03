@@ -10,11 +10,11 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=30';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=30';
-import { openProjectModal } from '../modal.js?v=30';
-import { startLoading, showError } from '../ui-state.js?v=30';
-import { getActiveFilters, subscribe } from '../filters.js?v=30';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=31';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=31';
+import { openProjectModal } from '../modal.js?v=31';
+import { startLoading, showError } from '../ui-state.js?v=31';
+import { getActiveFilters, subscribe } from '../filters.js?v=31';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',

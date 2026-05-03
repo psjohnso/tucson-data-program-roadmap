@@ -23,11 +23,11 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=30';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=30';
-import { openProjectModal } from '../modal.js?v=30';
-import { startLoading, showError } from '../ui-state.js?v=30';
-import { getActiveFilters, subscribe } from '../filters.js?v=30';
+} from '../data.js?v=31';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=31';
+import { openProjectModal } from '../modal.js?v=31';
+import { startLoading, showError } from '../ui-state.js?v=31';
+import { getActiveFilters, subscribe } from '../filters.js?v=31';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
