@@ -10,11 +10,11 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=28';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=28';
-import { openProjectModal } from '../modal.js?v=28';
-import { startLoading, showError } from '../ui-state.js?v=28';
-import { getActiveFilters, subscribe } from '../filters.js?v=28';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=29';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=29';
+import { openProjectModal } from '../modal.js?v=29';
+import { startLoading, showError } from '../ui-state.js?v=29';
+import { getActiveFilters, subscribe } from '../filters.js?v=29';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',
@@ -34,7 +34,20 @@ const STATUS_LABEL = {
 
 function getGoalSlug() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('goal');
+  const raw = params.get('goal');
+  if (!raw) return null;
+  // Defensive: if the URL somehow has a comma-separated value (e.g. an
+  // external filter URL pasted in, or a future bug), pick the first slug
+  // that maps to a known goal. The filter system itself never writes a
+  // multi-value to ?goal= on this page (see filters.js isGoalDetailPage).
+  if (raw.includes(',')) {
+    const slugs = raw.split(',').map(s => s.trim()).filter(Boolean);
+    for (const s of slugs) {
+      if (GOAL_BY_SLUG[s]) return s;
+    }
+    return slugs[0]; // fall through; renderNotFound will catch it
+  }
+  return raw;
 }
 
 async function renderGoal() {

@@ -21,9 +21,9 @@ import {
   clearFilters,
   subscribe,
   activeFilterCount
-} from './filters.js?v=28';
-import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=28';
-import { getDistinctDepartments } from './data.js?v=28';
+} from './filters.js?v=29';
+import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=29';
+import { getDistinctDepartments } from './data.js?v=29';
 
 // Status labels we display in the modal — same as the live app's mapping
 const STATUS_DISPLAY_LABEL = {
@@ -140,12 +140,15 @@ async function ensureModalExists() {
 
 function renderModalBody() {
   const body = modalEl.querySelector('.filter-modal__body');
+  // On goal-detail, the goal is implied by the page; the filter system doesn't
+  // manage the goal key there. Replace the Goal section with a contextual note.
+  const onGoalDetail = window.location.pathname.endsWith('goal.html');
   body.innerHTML = `
     ${renderSection('Status', 'status', STATUS_ORDER.map(s => ({
       value: s,
       label: STATUS_DISPLAY_LABEL[s] || s
     })))}
-    ${renderSection('Data Program Goal', 'goal', DATA_PROGRAM_GOALS.map(g => ({
+    ${onGoalDetail ? renderGoalContextNote() : renderSection('Data Program Goal', 'goal', DATA_PROGRAM_GOALS.map(g => ({
       value: g.slug,
       label: g.short
     })))}
@@ -155,6 +158,17 @@ function renderModalBody() {
     })), { dynamicNote: true })}
   `;
   updateApplyButtonLabel();
+}
+
+function renderGoalContextNote() {
+  return `
+    <div class="filter-modal__section">
+      <div class="filter-modal__section-label">Data Program Goal</div>
+      <p class="filter-modal__context-note">
+        You're viewing a single goal. Use Status and Department filters to narrow this view, or visit the
+        <a href="portfolio.html">Portfolio</a> to compare across goals.
+      </p>
+    </div>`;
 }
 
 function renderSection(label, group, options, opts = {}) {

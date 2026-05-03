@@ -24,12 +24,12 @@
                                     preserving any existing query params on href
 
    Usage:
-     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=28';
+     import { applyFilters, subscribe, getActiveFilters } from './filters.js?v=29';
      const filtered = applyFilters(allProjects);
      subscribe(() => rerender());
    ───────────────────────────────────────────────────────────────────────── */
 
-import { GOAL_BY_VALUE } from './config.js?v=28';
+import { GOAL_BY_VALUE } from './config.js?v=29';
 
 const FILTER_KEYS = ['status', 'goal', 'dept'];
 const subscribers = new Set();
@@ -131,10 +131,19 @@ export function appendFiltersToHref(href) {
 
 /* ─── Internals ─────────────────────────────────────────────────────────── */
 
+/** True when the current page is the goal-detail page, where ?goal= is a
+ *  page identifier (single slug), not a filter array. The filter system
+ *  ignores the goal key entirely on this page so it can't corrupt the URL. */
+function isGoalDetailPage() {
+  return window.location.pathname.endsWith('goal.html');
+}
+
 function parseFromUrl() {
+  const onGoalDetail = isGoalDetailPage();
   const params = new URLSearchParams(window.location.search);
   const out = {};
   for (const k of FILTER_KEYS) {
+    if (k === 'goal' && onGoalDetail) continue;
     const v = params.get(k);
     if (v) {
       const list = v.split(',').map(s => s.trim()).filter(Boolean);
@@ -145,8 +154,10 @@ function parseFromUrl() {
 }
 
 function writeToUrl() {
+  const onGoalDetail = isGoalDetailPage();
   const params = new URLSearchParams(window.location.search);
   for (const k of FILTER_KEYS) {
+    if (k === 'goal' && onGoalDetail) continue;  // never touch the page identifier
     if (state[k]?.length) params.set(k, state[k].join(','));
     else params.delete(k);
   }

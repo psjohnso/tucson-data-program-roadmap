@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=28';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=29';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';

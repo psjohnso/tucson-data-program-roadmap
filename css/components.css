@@ -1218,6 +1218,23 @@ body.modal-open { overflow: hidden; }
   padding: 4px 0;
 }
 .filter-modal__option input[type="checkbox"] { margin: 0; }
+
+/* Contextual note shown in place of the Goal section on goal-detail pages
+   where the goal is implied by the page identifier. */
+.filter-modal__context-note {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  background: var(--bg-section);
+  border-left: 3px solid var(--cot-innovation-blue);
+  padding: var(--space-2) var(--space-3);
+  margin: 0;
+  line-height: var(--leading-normal);
+}
+.filter-modal__context-note a {
+  color: var(--cot-innovation-blue);
+  font-weight: var(--weight-bold);
+}
 .filter-modal__footer {
   padding: var(--space-3) var(--space-6);
   border-top: 1px solid var(--border-subtle);

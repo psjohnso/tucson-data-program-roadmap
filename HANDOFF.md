@@ -99,7 +99,7 @@ tucson-data-program-roadmap/
 - **PATCH** — focused improvement round within an existing feature
 - **BUILD** — single-commit fix or tweak
 
-Every release also bumps the cache-bust query string (`?v=N`) on every CSS and JS import — including JS-internal imports inside modules. Cache-bust counter is independent of the app version (currently at `?v=28`).
+Every release also bumps the cache-bust query string (`?v=N`) on every CSS and JS import — including JS-internal imports inside modules. Cache-bust counter is independent of the app version (currently at `?v=29`).
 
 Publish procedure:
 
@@ -135,7 +135,7 @@ Key fields used from the feature service:
 ## How a fetch works (the pattern every page uses)
 
 ```js
-import { startLoading, showError } from '../ui-state.js?v=28';
+import { startLoading, showError } from '../ui-state.js?v=29';
 
 async function renderSomething() {
   const target = document.getElementById('some-slot');
