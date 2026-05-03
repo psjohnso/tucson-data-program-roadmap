@@ -12,11 +12,11 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=29';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=29';
-import { openProjectModal } from '../modal.js?v=29';
-import { startLoading, showError } from '../ui-state.js?v=29';
-import { getActiveFilters, subscribe } from '../filters.js?v=29';
+} from '../data.js?v=30';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=30';
+import { openProjectModal } from '../modal.js?v=30';
+import { startLoading, showError } from '../ui-state.js?v=30';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=30';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
@@ -79,8 +79,9 @@ async function renderRoadmapViewsGrid() {
         return acc;
       }, {});
 
+      const goalHref = appendFiltersToHref(`goal.html?goal=${encodeURIComponent(goal.slug)}`);
       return `
-        <a class="goal-card" href="goal.html?goal=${encodeURIComponent(goal.slug)}" style="--goal-accent: ${goal.color};">
+        <a class="goal-card" href="${goalHref}" style="--goal-accent: ${goal.color};">
           <div class="goal-card__title">${escape(goal.short)}</div>
           <div class="goal-card__desc">${escape(goal.description)}</div>
           <div class="goal-card__counts">

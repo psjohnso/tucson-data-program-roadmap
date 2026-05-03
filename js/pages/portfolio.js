@@ -4,11 +4,11 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=29';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=29';
-import { openProjectModal } from '../modal.js?v=29';
-import { startLoading, showError } from '../ui-state.js?v=29';
-import { getActiveFilters, subscribe } from '../filters.js?v=29';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=30';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=30';
+import { openProjectModal } from '../modal.js?v=30';
+import { startLoading, showError } from '../ui-state.js?v=30';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=30';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
@@ -50,7 +50,7 @@ async function renderPortfolio() {
       return `
         <article class="portfolio-card" style="--goal-accent: ${goal.color};">
           <header class="portfolio-card__header">
-            <h2 class="portfolio-card__title"><a href="goal.html?goal=${encodeURIComponent(goal.slug)}">${escape(goal.short)} →</a></h2>
+            <h2 class="portfolio-card__title"><a href="${appendFiltersToHref(`goal.html?goal=${encodeURIComponent(goal.slug)}`)}">${escape(goal.short)} →</a></h2>
             <div class="portfolio-card__count-total">${projects.length}</div>
           </header>
           <p class="portfolio-card__desc">${escape(goal.description)}</p>

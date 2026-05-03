@@ -1059,6 +1059,36 @@ body.modal-open { overflow: hidden; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   Toast — short-lived confirmation message (e.g. "Link copied"). Slides in
+   from the bottom-right, fades out after a couple of seconds.
+   ───────────────────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  background: var(--cot-innovation-blue);
+  color: white;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  z-index: 1100;
+  pointer-events: none;
+}
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (max-width: 600px) {
+  .toast { left: var(--space-4); right: var(--space-4); bottom: var(--space-4); text-align: center; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Filter banner — appears under the topnav when any filters are active.
    Subtle blue tint so it reads as informational, not alarming.
    ───────────────────────────────────────────────────────────────────────── */

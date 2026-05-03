@@ -20,10 +20,11 @@ import {
   setFilters,
   clearFilters,
   subscribe,
-  activeFilterCount
-} from './filters.js?v=29';
-import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=29';
-import { getDistinctDepartments } from './data.js?v=29';
+  activeFilterCount,
+  appendFiltersToHref
+} from './filters.js?v=30';
+import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=30';
+import { getDistinctDepartments } from './data.js?v=30';
 
 // Status labels we display in the modal — same as the live app's mapping
 const STATUS_DISPLAY_LABEL = {
@@ -260,13 +261,91 @@ function goalLabelForSlug(slug) {
   return g ? g.short : slug;
 }
 
+/* ─── Share button + toast ──────────────────────────────────────────────── */
+
+let toastEl = null;
+let toastTimer = null;
+
+async function shareCurrentUrl() {
+  const url = window.location.href;
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('Link copied to clipboard');
+  } catch (err) {
+    // navigator.clipboard can fail on http or in old browsers; fall back
+    console.warn('Clipboard write failed; using fallback:', err);
+    fallbackCopy(url);
+    showToast('Link copied to clipboard');
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch {}
+  ta.remove();
+}
+
+function showToast(message) {
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.className = 'toast';
+    toastEl.setAttribute('role', 'status');
+    toastEl.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = message;
+  // Force reflow so the transition triggers when we add the visible class
+  void toastEl.offsetWidth;
+  toastEl.classList.add('toast--visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastEl?.classList.remove('toast--visible');
+  }, 2200);
+}
+
+/* ─── Cross-page filter persistence ──────────────────────────────────────
+   Rewrite internal nav links so filter state carries across page nav.
+   Topnav and footer links live in static HTML and are walked here.
+   Page-rendered dynamic links (goal cards) use appendFiltersToHref()
+   inline at render time — see home.js / portfolio.js.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/** Rewrite static internal nav links so filter state carries across page
+ *  navigation. Targets the static topnav links and the footer "What's new"
+ *  link — both live in the page HTML and aren't re-rendered.
+ *
+ *  Dynamic links rendered by page modules (goal cards on home/portfolio)
+ *  call appendFiltersToHref() inline at render time. Two paths because the
+ *  static links can be DOM-walked once on init / once per filter change,
+ *  whereas dynamic links don't exist until a page module's render runs. */
+function rewriteNavLinks() {
+  const selectors = ['.topnav a[href]', '.page-footer a[href]'];
+  for (const sel of selectors) {
+    for (const a of document.querySelectorAll(sel)) {
+      const original = a.dataset.originalHref || a.getAttribute('href');
+      if (!original || /^(https?:|mailto:|#|javascript:)/i.test(original)) continue;
+      a.dataset.originalHref = original;
+      a.setAttribute('href', appendFiltersToHref(original));
+    }
+  }
+}
+
 /* ─── Bootstrapping ─────────────────────────────────────────────────────── */
 
 function init() {
-  // Filter button click → open modal
+  // Filter button click → open modal. Share button click → copy URL.
   document.addEventListener('click', e => {
     if (e.target.closest?.('[data-filter-toggle]')) {
       openFilterModal();
+      return;
+    }
+    if (e.target.closest?.('[data-share-toggle]')) {
+      shareCurrentUrl();
       return;
     }
 
@@ -287,11 +366,15 @@ function init() {
     }
   });
 
-  // Re-render UI whenever filter state changes
-  subscribe(refreshUI);
+  // Re-render UI + nav links whenever filter state changes
+  subscribe(() => {
+    refreshUI();
+    rewriteNavLinks();
+  });
 
   // Initial render
   refreshUI();
+  rewriteNavLinks();
 }
 
 function escape(str) {

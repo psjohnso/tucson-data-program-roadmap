@@ -203,6 +203,32 @@ a:hover { text-decoration: underline; }
 }
 .topnav__filter-badge[hidden] { display: none; }
 
+/* Share button — same visual language as the Filter button. Lives next to
+   it in the topnav so they read as a pair of view-state controls. */
+.topnav__share {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  margin-left: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-on-dark-muted);
+  cursor: pointer;
+  align-self: center;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.topnav__share:hover {
+  color: var(--text-on-dark);
+  border-color: var(--text-on-dark);
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Common UI primitives
    ───────────────────────────────────────────────────────────────────────── */
