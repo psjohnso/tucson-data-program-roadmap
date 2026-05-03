@@ -63,6 +63,37 @@ export function skeletonHtml(kind, opts = {}) {
               <div class="skel"></div>
             </div>`).join('')}
         </div>`;
+    case 'modal':
+      return `
+        <div class="skel-modal" aria-busy="true" aria-label="Loading project details">
+          <div class="skel-modal__header">
+            <div class="skel-modal__eyebrow">
+              <div class="skel"></div>
+              <div class="skel"></div>
+            </div>
+            <div class="skel skel-modal__title"></div>
+            <div class="skel skel-modal__subtitle"></div>
+          </div>
+          <div class="skel-modal__content">
+            <div class="skel skel-modal__label"></div>
+            <div class="skel skel-modal__line"></div>
+            <div class="skel skel-modal__line"></div>
+            <div class="skel skel-modal__line skel-modal__line--last"></div>
+            <div class="skel-modal__meta-grid">
+              <div class="skel-modal__meta-item">
+                <div class="skel skel-modal__meta-label"></div>
+                <div class="skel skel-modal__meta-value"></div>
+              </div>
+              <div class="skel-modal__meta-item">
+                <div class="skel skel-modal__meta-label"></div>
+                <div class="skel skel-modal__meta-value"></div>
+              </div>
+            </div>
+          </div>
+          <div class="skel-modal__footer">
+            <div class="skel"></div>
+          </div>
+        </div>`;
     default:
       return `<div class="skel" style="height: 80px;"></div>`;
   }

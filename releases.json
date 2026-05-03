@@ -1,0 +1,15 @@
+{
+  "comment": "Leadership-voice release notes. Hand-written, paired with the team-voice tagline pulled from the matching git commit subject. Add a new entry at the top of the array whenever a PATCH or larger release ships.",
+  "releases": [
+    {
+      "version": "1.1.0.0000",
+      "date": "2026-05-03",
+      "leadership": "Added a 'What's new' page so anyone can see what's changed release over release. The project detail modal now shows a content-shaped placeholder while it loads, in place of plain 'Loading…' text."
+    },
+    {
+      "version": "1.0.0.0000",
+      "date": "2026-05-02",
+      "leadership": "Phase 1 production launch. Tucson DATA goes live with home, roadmap, portfolio, and per-goal detail pages — a leadership-facing window onto the City of Tucson Data Team's program portfolio."
+    }
+  ]
+}

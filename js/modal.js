@@ -25,7 +25,8 @@ import {
   projectActualEndDate,
   projectGoals,
   projectInitiatives
-} from './data.js?v=22';
+} from './data.js?v=23';
+import { skeletonHtml } from './ui-state.js?v=23';
 
 let modalEl = null;
 let lastFocusedEl = null;
@@ -38,7 +39,7 @@ export async function openProjectModal(objectId) {
 
   // Show loading state immediately
   const body = modalEl.querySelector('.modal__body');
-  body.innerHTML = `<p class="muted" style="padding: var(--space-6); text-align: center;">Loading…</p>`;
+  body.innerHTML = skeletonHtml('modal');
   showModal();
 
   try {
