@@ -2,6 +2,11 @@
   "comment": "Leadership-voice release notes. Hand-written, paired with the team-voice tagline pulled from the matching git commit subject. Add a new entry at the top of the array whenever a PATCH or larger release ships.",
   "releases": [
     {
+      "version": "1.2.0.0000",
+      "date": "2026-05-03",
+      "leadership": "Added a Filter feature so leadership can narrow the portfolio by status, goal, and department. Filtered views are shareable — the URL captures the filter state, so a link sent over email or Slack opens the same filtered view for the recipient. Status strip and goal cards across every page reflect the active filter, including the new filter banner under the top navigation that lists what's filtered and lets you clear individual chips."
+    },
+    {
       "version": "1.1.1.0000",
       "date": "2026-05-03",
       "leadership": "Added the City of Tucson Information Technology logo to the page header and footer, completing institutional attribution alongside the Tucson DATA mark."

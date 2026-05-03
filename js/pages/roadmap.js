@@ -23,10 +23,11 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=25';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=25';
-import { openProjectModal } from '../modal.js?v=25';
-import { startLoading, showError } from '../ui-state.js?v=25';
+} from '../data.js?v=26';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=26';
+import { openProjectModal } from '../modal.js?v=26';
+import { startLoading, showError } from '../ui-state.js?v=26';
+import { getActiveFilters, subscribe } from '../filters.js?v=26';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
@@ -161,14 +162,22 @@ async function renderTimeline() {
     const { start: windowStart, end: windowEnd } = defaultWindow();
 
     // Fetch all projects (we filter for status here so the lane counts can
-    // include all visible projects, while only non-Complete ones get bars)
-    const allProjects = await getProjects();
+    // include all visible projects, while only non-Complete ones get bars).
+    // Pass current filter state to data layer so user filters apply too.
+    const filters = getActiveFilters();
+    const allProjects = await getProjects({ filters });
     loading.cancel();
     const visibleProjects = allProjects.filter(p => VISIBLE_STATUSES.has(p.status));
 
+    // When goal filter is active, only show those goals' lanes
+    const includedGoalSlugs = filters.goal?.length ? new Set(filters.goal) : null;
+    const filteredGoals = includedGoalSlugs
+      ? DATA_PROGRAM_GOALS.filter(g => includedGoalSlugs.has(g.slug))
+      : DATA_PROGRAM_GOALS;
+
     // Group by lane
     const lanes = [
-      ...DATA_PROGRAM_GOALS.map(g => ({
+      ...filteredGoals.map(g => ({
         slug: g.slug,
         label: g.short,
         color: g.color,
@@ -494,3 +503,4 @@ function formatRange(start, end, isPoint) {
 }
 
 renderTimeline();
+subscribe(renderTimeline);

@@ -10,10 +10,11 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=25';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=25';
-import { openProjectModal } from '../modal.js?v=25';
-import { startLoading, showError } from '../ui-state.js?v=25';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=26';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=26';
+import { openProjectModal } from '../modal.js?v=26';
+import { startLoading, showError } from '../ui-state.js?v=26';
+import { getActiveFilters, subscribe } from '../filters.js?v=26';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',
@@ -71,7 +72,12 @@ async function renderGoal() {
   const loading = startLoading(listEl, 'project-list', { rows: 8 });
 
   try {
-    const groups = await getProjectsByGoal();
+    // Page-wins on goal: read filters but null out the goal filter so this
+    // page always renders its identified goal regardless of global filter.
+    // Status and dept filters still apply.
+    const filters = getActiveFilters();
+    delete filters.goal;
+    const groups = await getProjectsByGoal({ filters });
     loading.cancel();
     const projects = groups[goal.value] || [];
 
@@ -243,6 +249,7 @@ function escape(str) {
 }
 
 renderGoal();
+subscribe(renderGoal);
 
 // Project items open the modal on click or Enter/Space
 document.addEventListener('click', e => {

@@ -12,18 +12,20 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=25';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=25';
-import { openProjectModal } from '../modal.js?v=25';
-import { startLoading, showError } from '../ui-state.js?v=25';
+} from '../data.js?v=26';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=26';
+import { openProjectModal } from '../modal.js?v=26';
+import { startLoading, showError } from '../ui-state.js?v=26';
+import { getActiveFilters, subscribe } from '../filters.js?v=26';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 
 async function renderStatusStrip() {
   try {
+    const filters = getActiveFilters();
     const [counts, shipped] = await Promise.all([
-      getStatusCounts(),
-      getShippedCount()
+      getStatusCounts({ filters }),
+      getShippedCount({ filters })
     ]);
 
     setStat('active',    counts['Active']    || 0);
@@ -55,10 +57,21 @@ async function renderRoadmapViewsGrid() {
   const loading = startLoading(target, 'goal-grid');
 
   try {
-    const groups = await getProjectsByGoal();
+    const filters = getActiveFilters();
+    const groups = await getProjectsByGoal({ filters });
     loading.cancel();
 
-    const cards = DATA_PROGRAM_GOALS.map(goal => {
+    // When goal filter is active, hide cards for goals not in the filter
+    const visibleGoals = filters.goal?.length
+      ? DATA_PROGRAM_GOALS.filter(g => filters.goal.includes(g.slug))
+      : DATA_PROGRAM_GOALS;
+
+    if (visibleGoals.length === 0) {
+      target.innerHTML = `<p class="muted">No goals match the current filter.</p>`;
+      return;
+    }
+
+    const cards = visibleGoals.map(goal => {
       const projects = groups[goal.value] || [];
       const counts = projects.reduce((acc, p) => {
         const s = p.status || 'Unknown';
@@ -104,7 +117,7 @@ async function renderRecentlyShipped() {
   const loading = startLoading(target, 'feed', { rows: 6 });
 
   try {
-    const shipped = await getRecentlyShipped({ limit: 6 });
+    const shipped = await getRecentlyShipped({ limit: 6, filters: getActiveFilters() });
     loading.cancel();
     if (!shipped.length) {
       target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing shipped yet.</p>`;
@@ -143,7 +156,7 @@ async function renderComingUp() {
   const loading = startLoading(target, 'feed', { rows: 6 });
 
   try {
-    const coming = await getComingUp({ limit: 6 });
+    const coming = await getComingUp({ limit: 6, filters: getActiveFilters() });
     loading.cancel();
     if (!coming.length) {
       target.innerHTML = `<p class="muted" style="padding: var(--space-4);">Nothing scheduled in the near term.</p>`;
@@ -213,10 +226,15 @@ function formatRelativeDate(date) {
 
 /* ─── Boot ──────────────────────────────────────────────────────────────── */
 
-renderStatusStrip();
-renderRoadmapViewsGrid();
-renderRecentlyShipped();
-renderComingUp();
+function renderAll() {
+  renderStatusStrip();
+  renderRoadmapViewsGrid();
+  renderRecentlyShipped();
+  renderComingUp();
+}
+
+renderAll();
+subscribe(renderAll);
 
 // Event delegation: clickable rows open the modal
 document.addEventListener('click', e => {

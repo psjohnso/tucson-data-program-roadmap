@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear } from './config.js?v=25';
+import { getFiscalYear } from './config.js?v=26';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -102,13 +102,14 @@ export async function getStatusCounts({ filters = {} } = {}) {
   }, {});
 }
 
-export async function getShippedCount({ fiscalYear } = {}) {
+export async function getShippedCount({ fiscalYear, filters = {} } = {}) {
   const fy = fiscalYear ?? getFiscalYear();
   const all = await loadAllProjects();
   return all.filter(p => {
     if (p.status !== 'Complete') return false;
     if (!p.actual_end) return false;
-    return getFiscalYear(p.actual_end) === fy;
+    if (getFiscalYear(p.actual_end) !== fy) return false;
+    return matchesFilters(p, filters);
   }).length;
 }
 
@@ -128,10 +129,10 @@ export async function getProjectsByGoal({ filters = {} } = {}) {
 /** Most recently shipped Data Program work — projects with status=Complete
  *  and an actual_end date, sorted newest first. Replaces the earlier
  *  "Recently edited" feed which conflated row updates with project progress. */
-export async function getRecentlyShipped({ limit = 6 } = {}) {
+export async function getRecentlyShipped({ limit = 6, filters = {} } = {}) {
   const all = await loadAllProjects();
   return all
-    .filter(p => p.status === 'Complete' && p.actual_end)
+    .filter(p => p.status === 'Complete' && p.actual_end && matchesFilters(p, filters))
     .sort((a, b) => {
       const ad = projectActualEndDate(a)?.getTime() ?? 0;
       const bd = projectActualEndDate(b)?.getTime() ?? 0;
@@ -142,10 +143,10 @@ export async function getRecentlyShipped({ limit = 6 } = {}) {
 
 /** What's coming up — Active or Scheduled projects sorted by working_due
  *  date ascending. Earliest due first, so leadership sees what's about to land. */
-export async function getComingUp({ limit = 6 } = {}) {
+export async function getComingUp({ limit = 6, filters = {} } = {}) {
   const all = await loadAllProjects();
   return all
-    .filter(p => (p.status === 'Active' || p.status === 'Scheduled') && p.working_due)
+    .filter(p => (p.status === 'Active' || p.status === 'Scheduled') && p.working_due && matchesFilters(p, filters))
     .sort((a, b) => {
       const ad = projectEndDate(a)?.getTime() ?? Infinity;
       const bd = projectEndDate(b)?.getTime() ?? Infinity;
@@ -161,11 +162,22 @@ export async function getComingUp({ limit = 6 } = {}) {
 function matchesFilters(p, filters) {
   if (filters.status?.length && !filters.status.includes(p.status)) return false;
   if (filters.goal?.length && !projectGoals(p).some(g => filters.goal.includes(g))) return false;
-  if (filters.department && p.partner_dept !== filters.department) return false;
+  if (filters.dept?.length && !filters.dept.includes(p.partner_dept)) return false;
   if (filters.itInitiative?.length && !projectInitiatives(p).some(i => filters.itInitiative.includes(i))) return false;
   if (filters.from && projectEndDate(p) && projectEndDate(p) < filters.from) return false;
   if (filters.to && projectStartDate(p) && projectStartDate(p) > filters.to) return false;
   return true;
+}
+
+/** Distinct partner_dept values across all visible projects, sorted.
+ *  Used to populate the Department checkbox group in the filter modal. */
+export async function getDistinctDepartments() {
+  const all = await loadAllProjects();
+  const set = new Set();
+  for (const p of all) {
+    if (p.partner_dept) set.add(p.partner_dept);
+  }
+  return Array.from(set).sort();
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

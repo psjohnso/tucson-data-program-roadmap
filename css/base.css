@@ -164,6 +164,45 @@ a:hover { text-decoration: underline; }
   border-bottom-color: var(--cot-sun-yellow);
 }
 
+/* Filter button — sibling to the nav links, right-aligned. Same visual
+   language (uppercase, bold, tracked text, light color) so it reads as
+   part of the chrome rather than a foreign control. */
+.topnav__filter {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-on-dark-muted);
+  cursor: pointer;
+  align-self: center;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.topnav__filter:hover {
+  color: var(--text-on-dark);
+  border-color: var(--text-on-dark);
+}
+.topnav__filter-badge {
+  background: var(--cot-sun-yellow);
+  color: var(--cot-innovation-blue);
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  border-radius: 999px;
+  padding: 1px 7px;
+  min-width: 18px;
+  text-align: center;
+  letter-spacing: 0;
+}
+.topnav__filter-badge[hidden] { display: none; }
+
 /* ─────────────────────────────────────────────────────────────────────────
    Common UI primitives
    ───────────────────────────────────────────────────────────────────────── */
@@ -199,11 +238,17 @@ a:hover { text-decoration: underline; }
   padding: var(--space-5);
 }
 
-/* Metric card (status strip cells) */
+/* Metric card (status strip cells)
+   Flex-column with margin-top: auto on the value pushes counts to the bottom
+   of every card. Combined with grid auto-sizing rows to the tallest card,
+   all cards in a row have aligned label tops AND aligned value bottoms,
+   regardless of how many lines a label wraps to. */
 .metric-card {
   background: var(--bg-section);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
 }
 
 .metric-card__label {
@@ -213,13 +258,15 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   color: var(--text-secondary);
   font-weight: var(--weight-bold);
+  line-height: 1.2;
 }
 
 .metric-card__value {
   font-family: var(--font-sans);
   font-size: var(--text-3xl);
   font-weight: var(--weight-black);
-  margin-top: var(--space-1);
+  margin-top: auto;
+  padding-top: var(--space-1);
   line-height: 1;
   color: var(--text-primary);
 }

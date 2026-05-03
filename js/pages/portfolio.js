@@ -4,10 +4,11 @@
    a sample of project titles drawn from the AGOL service.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=25';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=25';
-import { openProjectModal } from '../modal.js?v=25';
-import { startLoading, showError } from '../ui-state.js?v=25';
+import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=26';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=26';
+import { openProjectModal } from '../modal.js?v=26';
+import { startLoading, showError } from '../ui-state.js?v=26';
+import { getActiveFilters, subscribe } from '../filters.js?v=26';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
@@ -19,10 +20,21 @@ async function renderPortfolio() {
   const loading = startLoading(target, 'goal-grid');
 
   try {
-    const groups = await getProjectsByGoal();
+    const filters = getActiveFilters();
+    const groups = await getProjectsByGoal({ filters });
     loading.cancel();
 
-    target.innerHTML = DATA_PROGRAM_GOALS.map(goal => {
+    // When goal filter is active, only show those goals' cards.
+    const visibleGoals = filters.goal?.length
+      ? DATA_PROGRAM_GOALS.filter(g => filters.goal.includes(g.slug))
+      : DATA_PROGRAM_GOALS;
+
+    if (visibleGoals.length === 0) {
+      target.innerHTML = `<p class="muted">No goals match the current filter.</p>`;
+      return;
+    }
+
+    target.innerHTML = visibleGoals.map(goal => {
       const projects = groups[goal.value] || [];
       const counts = projects.reduce((acc, p) => {
         acc[p.status || 'Unknown'] = (acc[p.status || 'Unknown'] || 0) + 1;
@@ -122,6 +134,7 @@ function escape(str) {
 }
 
 renderPortfolio();
+subscribe(renderPortfolio);
 
 // Event delegation: any click on a .project-item element opens the modal
 document.addEventListener('click', e => {
