@@ -10,11 +10,11 @@
    Falls back to a 404-style message if the slug doesn't match a known goal.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=31';
-import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=31';
-import { openProjectModal } from '../modal.js?v=31';
-import { startLoading, showError } from '../ui-state.js?v=31';
-import { getActiveFilters, subscribe } from '../filters.js?v=31';
+import { getProjectsByGoal, projectDisplayTitle, projectEndDate, projectActualEndDate } from '../data.js?v=32';
+import { DATA_PROGRAM_GOALS, GOAL_BY_SLUG, STATUS_ORDER } from '../config.js?v=32';
+import { openProjectModal } from '../modal.js?v=32';
+import { startLoading, showError } from '../ui-state.js?v=32';
+import { getActiveFilters, subscribe } from '../filters.js?v=32';
 
 const STATUS_COLOR_VAR = {
   'Active':    'var(--status-active)',
@@ -263,6 +263,7 @@ function escape(str) {
 
 renderGoal();
 subscribe(renderGoal);
+window.addEventListener('tucson-data:refresh', renderGoal);
 
 // Project items open the modal on click or Enter/Space
 document.addEventListener('click', e => {

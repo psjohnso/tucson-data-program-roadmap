@@ -22,9 +22,9 @@ import {
   subscribe,
   activeFilterCount,
   appendFiltersToHref
-} from './filters.js?v=31';
-import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=31';
-import { getDistinctDepartments } from './data.js?v=31';
+} from './filters.js?v=32';
+import { DATA_PROGRAM_GOALS, STATUS_ORDER } from './config.js?v=32';
+import { getDistinctDepartments } from './data.js?v=32';
 
 // Status labels we display in the modal — same as the live app's mapping
 const STATUS_DISPLAY_LABEL = {

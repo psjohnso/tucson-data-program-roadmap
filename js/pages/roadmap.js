@@ -23,11 +23,11 @@ import {
   projectStartDate,
   projectEndDate,
   laneGoalFor
-} from '../data.js?v=31';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=31';
-import { openProjectModal } from '../modal.js?v=31';
-import { startLoading, showError } from '../ui-state.js?v=31';
-import { getActiveFilters, subscribe } from '../filters.js?v=31';
+} from '../data.js?v=32';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=32';
+import { openProjectModal } from '../modal.js?v=32';
+import { startLoading, showError } from '../ui-state.js?v=32';
+import { getActiveFilters, subscribe } from '../filters.js?v=32';
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
 
@@ -504,3 +504,4 @@ function formatRange(start, end, isPoint) {
 
 renderTimeline();
 subscribe(renderTimeline);
+window.addEventListener('tucson-data:refresh', renderTimeline);

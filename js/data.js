@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=31';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=32';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -56,6 +56,7 @@ const OUTFIELDS = [
 ].join(',');
 
 let _allProjectsCache = null;
+let _lastFetchTime = null;  // ms epoch when the cache was last populated
 
 /** Fetch every visible Data Program project. Cached for the page session. */
 async function loadAllProjects() {
@@ -76,7 +77,22 @@ async function loadAllProjects() {
   if (json.error) throw new Error(`AGOL error: ${json.error.message || JSON.stringify(json.error)}`);
 
   _allProjectsCache = (json.features || []).map(f => f.attributes);
+  _lastFetchTime = Date.now();
   return _allProjectsCache;
+}
+
+/** When was the project cache last populated? Returns null if never fetched
+ *  yet (or just cleared via clearCache). Used by the refresh-ui to decide
+ *  when to surface a "data is stale" indicator. */
+export function getLastFetchTime() {
+  return _lastFetchTime;
+}
+
+/** Clear the project cache so the next read forces a fresh AGOL fetch.
+ *  Used by the manual refresh button in refresh-ui.js. */
+export function clearCache() {
+  _allProjectsCache = null;
+  _lastFetchTime = null;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -251,8 +267,3 @@ export function projectEditDate(p) {
   return p.EditDate ? new Date(p.EditDate) : null;
 }
 
-/* ─────────────────────────────────────────────────────────────────────────
-   Convenience: clear the cache so the next read re-fetches.
-   Useful for a "refresh" button later.
-   ───────────────────────────────────────────────────────────────────────── */
-export function _clearCache() { _allProjectsCache = null; }
