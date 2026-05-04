@@ -2,6 +2,11 @@
   "comment": "Leadership-voice release notes. Hand-written, paired with the team-voice tagline pulled from the matching git commit subject. Add a new entry at the top of the array whenever a PATCH or larger release ships.",
   "releases": [
     {
+      "version": "1.6.0.0000",
+      "date": "2026-05-03",
+      "leadership": "Added a Portfolio heatmap, accessible from the new Heatmap link in the top navigation. The page shows a Goal × Department grid with each cell colored by project count, surfacing where data program work concentrates today. Filters apply to the heatmap the same way they apply elsewhere. The page includes a 'What's next' note explaining how this view will evolve to show actual time invested once tracker time-entry data is exposed."
+    },
+    {
       "version": "1.5.0.0000",
       "date": "2026-05-03",
       "leadership": "The portfolio page now offers a By department view. Use the dropdown above the cards to switch between By goal (the original view, six Data Program Goals) and By department (one card per partner department, sorted by project count). Clicking a department card applies that department as a filter and switches back to the goal view, showing how that department's work distributes across the program."

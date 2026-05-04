@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tucson DATA · What's new</title>
-  <meta name="description" content="Notable updates to the Tucson DATA portfolio site, release by release.">
+  <title>Tucson DATA · Portfolio heatmap</title>
+  <meta name="description" content="Where Tucson's data program work concentrates — Data Program Goal × Department.">
 
-  <link rel="canonical" href="https://psjohnso.github.io/tucson-data-program-roadmap/releases.html">
+  <link rel="canonical" href="https://psjohnso.github.io/tucson-data-program-roadmap/heatmap.html">
 
   <!-- Open Graph / link previews (Slack, email, social media) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Tucson DATA">
-  <meta property="og:url" content="https://psjohnso.github.io/tucson-data-program-roadmap/releases.html">
-  <meta property="og:title" content="Tucson DATA — What's new">
-  <meta property="og:description" content="Notable updates to the Tucson DATA portfolio site, release by release.">
+  <meta property="og:url" content="https://psjohnso.github.io/tucson-data-program-roadmap/heatmap.html">
+  <meta property="og:title" content="Tucson DATA — Portfolio heatmap">
+  <meta property="og:description" content="A two-dimensional view of where data program projects concentrate, by Data Program Goal and partner department.">
   <meta property="og:image" content="https://psjohnso.github.io/tucson-data-program-roadmap/assets/tucson-data-logo.png">
   <meta property="og:image:alt" content="Tucson DATA logo — colorful mosaic above the words TUCSON DATA in blue">
 
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tucson DATA — What's new">
-  <meta name="twitter:description" content="Notable updates to the Tucson DATA portfolio site, release by release.">
+  <meta name="twitter:title" content="Tucson DATA — Portfolio heatmap">
+  <meta name="twitter:description" content="A two-dimensional view of where data program projects concentrate.">
   <meta name="twitter:image" content="https://psjohnso.github.io/tucson-data-program-roadmap/assets/tucson-data-logo.png">
 
   <!-- Indexing posture: allow indexing but discourage caching for HTML -->
@@ -47,8 +47,8 @@
       </a>
       <div class="header-text">
         <div class="header-eyebrow">City of Tucson · Information Technology</div>
-        <h1 class="header-title">What's new</h1>
-        <p class="header-subtitle">Notable updates to the Tucson DATA portfolio site.</p>
+        <h1 class="header-title">Portfolio heatmap</h1>
+        <p class="header-subtitle">Where data program work concentrates, by goal and department.</p>
       </div>
       <div class="header-cot-logo" aria-label="City of Tucson Information Technology">
         <img src="assets/cot-logos/City-of-Tucson_IT-horizontal.svg" alt="City of Tucson IT">
@@ -59,7 +59,7 @@
         <a href="index.html">Home</a>
         <a href="roadmap.html">Roadmap</a>
         <a href="portfolio.html">Portfolio</a>
-        <a href="heatmap.html">Heatmap</a>
+        <a href="heatmap.html" aria-current="page">Heatmap</a>
         <button class="topnav__filter" type="button" data-filter-toggle aria-haspopup="dialog">
           Filter
           <span class="topnav__filter-badge" hidden>0</span>
@@ -71,16 +71,33 @@
     </nav>
   </header>
   <div id="filter-banner" class="filter-banner" hidden></div>
+  <div id="refresh-bar" class="refresh-bar" hidden></div>
 
   <main class="page">
     <div class="container">
       <section>
-        <div id="releases-list">
+        <p class="prose muted">
+          Each row is a Data Program Goal (using a project's primary goal — same single-counting rule as the roadmap timeline). Each column is a partner department. The number in each cell is the count of projects at that intersection; cell color scales with that count. The trailing column is the per-goal total; the trailing row is the per-department total.
+        </p>
+
+        <div id="heatmap-slot">
           <p class="muted" style="padding: var(--space-4);">Loading…</p>
         </div>
-        <p class="muted prose" style="margin-top: var(--space-6); font-size: var(--text-sm);">
-          Showing PATCH releases and larger. Single-commit tweaks are folded into the next summary.
-        </p>
+      </section>
+
+      <section style="margin-top: var(--space-10);">
+        <div class="section-heading">What's next</div>
+        <div class="heatmap-future">
+          <p class="prose">
+            This view currently shows <strong>project count</strong> — the number of distinct projects at each goal × department intersection. It's an honest signal about where the team's work is spread, but it counts a small effort the same as a large one.
+          </p>
+          <p class="prose">
+            When the tracker exposes its <code>time_entries</code> data via AGOL, this page will switch to showing <strong>actual time invested</strong> — hours logged per goal × department per quarter. At that point we'll likely add a quarter dimension so leadership can see how investment has shifted over time. The page name and URL will stay the same; the underlying signal will get sharper.
+          </p>
+          <p class="prose muted">
+            Until then, count is the most accurate framing — and a useful map of where the program reaches today.
+          </p>
+        </div>
       </section>
     </div>
   </main>
@@ -98,6 +115,7 @@
   </footer>
 
   <script type="module" src="js/filter-ui.js?v=36"></script>
-  <script type="module" src="js/pages/releases.js?v=36"></script>
+  <script type="module" src="js/refresh-ui.js?v=36"></script>
+  <script type="module" src="js/pages/heatmap.js?v=36"></script>
 </body>
 </html>

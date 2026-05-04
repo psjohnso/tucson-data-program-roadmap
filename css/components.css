@@ -1403,6 +1403,127 @@ body.modal-open { overflow: hidden; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   Portfolio heatmap — Goal × Department, cells colored by project count.
+   Rotated column headers (vertical-rl) keep the table compact when there
+   are many departments. Wrapper enables horizontal scroll on narrow
+   viewports without affecting page width.
+   ───────────────────────────────────────────────────────────────────────── */
+.heatmap-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+}
+.heatmap {
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  width: 100%;
+}
+.heatmap th, .heatmap td {
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid var(--border-subtle);
+}
+.heatmap__col {
+  padding: var(--space-2) var(--space-3);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--bg-section);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  min-width: 38px;
+  max-width: 60px;
+  height: 160px;
+}
+.heatmap__row {
+  padding: var(--space-3) var(--space-4);
+  font-weight: var(--weight-bold);
+  color: var(--cot-innovation-blue);
+  background: var(--bg-section);
+  text-align: left;
+  white-space: nowrap;
+  min-width: 200px;
+}
+.heatmap__corner {
+  background: var(--bg-section);
+  width: 200px;
+  height: 160px;
+}
+.heatmap__total-h {
+  padding: var(--space-3);
+  background: var(--bg-section);
+  color: var(--cot-innovation-blue);
+  font-weight: var(--weight-bold);
+  writing-mode: horizontal-tb;
+  transform: none;
+  min-width: 60px;
+  height: auto;
+}
+.heatmap__row-total {
+  background: var(--bg-section);
+  color: var(--cot-innovation-blue);
+  font-weight: var(--weight-bold);
+  padding: var(--space-3);
+}
+.heatmap__grand-total {
+  background: var(--cot-innovation-blue);
+  color: white;
+  font-weight: var(--weight-bold);
+  padding: var(--space-3);
+}
+.heatmap__cell {
+  padding: var(--space-3);
+  font-weight: var(--weight-bold);
+  cursor: default;
+  transition: outline 100ms;
+  min-width: 38px;
+}
+.heatmap__cell:hover { outline: 2px solid var(--cot-innovation-blue); outline-offset: -2px; }
+.heatmap__cell--empty {
+  background: white;
+  color: var(--text-tertiary);
+  font-weight: normal;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+.heatmap-legend__bar {
+  display: inline-block;
+  width: 240px;
+  height: 14px;
+  background: linear-gradient(to right,
+    rgba(0, 38, 105, 0.05),
+    rgba(0, 38, 105, 0.85));
+  border-radius: 2px;
+  border: 1px solid var(--border-subtle);
+}
+.heatmap-legend__divider { color: var(--text-tertiary); }
+
+.heatmap-future {
+  background: #fffbe8;
+  border-left: 3px solid var(--cot-sun-yellow);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4) var(--space-5);
+}
+.heatmap-future p { margin: 0 0 var(--space-2); }
+.heatmap-future p:last-child { margin-bottom: 0; }
+
+/* ─────────────────────────────────────────────────────────────────────────
    City of Tucson IT logo — institutional attribution. Appears in the header
    band (right side, paired with the Tucson DATA mark) and in the footer
    (right side, replacing the department-name text). The horizontal variant
