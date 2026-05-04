@@ -28,15 +28,15 @@
   <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 
 
-  <link rel="icon" href="assets/favicon.ico?v=36" sizes="any">
-  <link rel="icon" type="image/png" href="assets/favicon.png?v=36">
-  <link rel="apple-touch-icon" href="assets/favicon.png?v=36">
+  <link rel="icon" href="assets/favicon.ico?v=37" sizes="any">
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=37">
+  <link rel="apple-touch-icon" href="assets/favicon.png?v=37">
 
-  <link rel="stylesheet" href="css/fonts.css?v=36">
+  <link rel="stylesheet" href="css/fonts.css?v=37">
 
-  <link rel="stylesheet" href="css/tokens.css?v=36">
-  <link rel="stylesheet" href="css/base.css?v=36">
-  <link rel="stylesheet" href="css/components.css?v=36">
+  <link rel="stylesheet" href="css/tokens.css?v=37">
+  <link rel="stylesheet" href="css/base.css?v=37">
+  <link rel="stylesheet" href="css/components.css?v=37">
 </head>
 <body>
 
@@ -76,8 +76,17 @@
   <main class="page">
     <div class="container">
       <section>
-        <p class="prose muted">
-          Each row is a Data Program Goal (using a project's primary goal — same single-counting rule as the roadmap timeline). Each column is a partner department. The number in each cell is the count of projects at that intersection; cell color scales with that count. The trailing column is the per-goal total; the trailing row is the per-department total.
+        <div class="portfolio-toolbar">
+          <label class="portfolio-toolbar__label" for="heatmap-view">View:</label>
+          <select id="heatmap-view" class="portfolio-toolbar__select">
+            <option value="goal-dept">Goal × Department</option>
+            <option value="team-goal">ITD Team × Goal</option>
+            <option value="status-goal">Status × Goal</option>
+            <option value="dept-status">Department × Status</option>
+          </select>
+        </div>
+        <p class="prose muted" id="heatmap-explainer">
+          Loading…
         </p>
 
         <div id="heatmap-slot">
@@ -105,7 +114,7 @@
   <footer class="page-footer">
     <div class="container">
       <span>
-        Tucson DATA · v1.6.0.0000
+        Tucson DATA · v1.7.0.0000
         <span class="muted" style="margin-left: var(--space-2);"><a href="releases.html">What's new</a></span>
       </span>
       <span class="footer-cot-logo" aria-label="City of Tucson Information Technology">
@@ -114,8 +123,8 @@
     </div>
   </footer>
 
-  <script type="module" src="js/filter-ui.js?v=36"></script>
-  <script type="module" src="js/refresh-ui.js?v=36"></script>
-  <script type="module" src="js/pages/heatmap.js?v=36"></script>
+  <script type="module" src="js/filter-ui.js?v=37"></script>
+  <script type="module" src="js/refresh-ui.js?v=37"></script>
+  <script type="module" src="js/pages/heatmap.js?v=37"></script>
 </body>
 </html>

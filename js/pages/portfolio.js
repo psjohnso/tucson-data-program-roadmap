@@ -11,11 +11,11 @@
    work distributes across the six goals.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, getProjectsByDepartment, projectDisplayTitle } from '../data.js?v=36';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=36';
-import { openProjectModal } from '../modal.js?v=36';
-import { startLoading, showError } from '../ui-state.js?v=36';
-import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=36';
+import { getProjectsByGoal, getProjectsByDepartment, projectDisplayTitle } from '../data.js?v=37';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=37';
+import { openProjectModal } from '../modal.js?v=37';
+import { startLoading, showError } from '../ui-state.js?v=37';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=37';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];

@@ -2,6 +2,11 @@
   "comment": "Leadership-voice release notes. Hand-written, paired with the team-voice tagline pulled from the matching git commit subject. Add a new entry at the top of the array whenever a PATCH or larger release ships.",
   "releases": [
     {
+      "version": "1.7.0.0000",
+      "date": "2026-05-04",
+      "leadership": "The Portfolio heatmap now lets you switch between four dimension pairings: Goal × Department (the default), ITD Team × Goal, Status × Goal, and Department × Status. Use the View dropdown above the grid to pick the pairing. Goals always render in their fixed program order; status follows the canonical Active → Cancelled order; departments and teams sort by project count, heaviest first."
+    },
+    {
       "version": "1.6.0.0000",
       "date": "2026-05-03",
       "leadership": "Added a Portfolio heatmap, accessible from the new Heatmap link in the top navigation. The page shows a Goal × Department grid with each cell colored by project count, surfacing where data program work concentrates today. Filters apply to the heatmap the same way they apply elsewhere. The page includes a 'What's next' note explaining how this view will evolve to show actual time invested once tracker time-entry data is exposed."

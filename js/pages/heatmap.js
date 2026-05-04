@@ -1,33 +1,98 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   heatmap.js — Portfolio heatmap (Goal × Department)
+   heatmap.js — Portfolio heatmap
 
-   Cell value: count of projects in that goal × department intersection.
-   Color intensity scales from light to deep innovation-blue based on the
-   max cell value in the current view.
+   Renders a 2-D grid of project counts across two project dimensions.
+   The user picks the dimension pairing via the View dropdown; URL state
+   is ?view=<id> with the default (goal-dept) omitted.
 
-   Goal lane assignment uses laneGoalFor() (primary goal only) — same rule
-   as the roadmap timeline, so each project shows in exactly one row.
-   Multi-goal projects show under their primary goal.
+   Dimension model: each dimension has
+     keyFn(p)         → the bucket key for a project
+     labelFn(key)     → display string for a bucket
+     orderedKeysFn(t) → ordered array of keys to render (t = totals map)
 
-   Filter state is respected; click on the filter button at the top of any
-   page narrows what feeds into the heatmap.
+   Goals always render in fixed config order; status follows STATUS_ORDER
+   (only values present); dept and team are dynamic, sorted by total desc.
 
-   Future enhancement: when the tracker's time_entries feature service is
-   exposed via AGOL, swap the cell value from project-count to sum-of-hours
-   for a true investment view. Until then, count is the most honest signal.
+   Filter state is respected; refresh integration is wired.
+
+   Future enhancement: cell click → drill-down by applying both row and
+   column as filters (where they map to filter dimensions).
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjects, laneGoalFor } from '../data.js?v=36';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=36';
-import { startLoading, showError } from '../ui-state.js?v=36';
-import { getActiveFilters, subscribe } from '../filters.js?v=36';
+import { getProjects, laneGoalFor } from '../data.js?v=37';
+import {
+  DATA_PROGRAM_GOALS,
+  GOAL_BY_VALUE,
+  STATUS_ORDER,
+  STATUS_LABELS
+} from '../config.js?v=37';
+import { startLoading, showError } from '../ui-state.js?v=37';
+import { getActiveFilters, subscribe } from '../filters.js?v=37';
 
 const NO_DEPT_LABEL = 'Unassigned';
+const NO_TEAM_LABEL = 'Unassigned';
+const UNCLASSIFIED_GOAL = 'Unclassified';
 
-function projectGoalSlug(p) {
-  const value = laneGoalFor(p);
-  return GOAL_BY_VALUE[value]?.slug || null;
+/* ─── Dimensions ─────────────────────────────────────────────────────────── */
+
+const DIMENSIONS = {
+  goal: {
+    title: 'Data Program Goal',
+    keyFn: (p) => laneGoalFor(p),                 // returns AGOL value or 'Unclassified'
+    labelFn: (key) => GOAL_BY_VALUE[key]?.short || key,
+    orderedKeysFn: (totals) => {
+      const out = DATA_PROGRAM_GOALS.map(g => g.value);
+      if (totals[UNCLASSIFIED_GOAL]) out.push(UNCLASSIFIED_GOAL);
+      return out;  // always show all 6, even if empty (audit signal)
+    }
+  },
+  dept: {
+    title: 'Department',
+    keyFn: (p) => p.partner_dept || NO_DEPT_LABEL,
+    labelFn: (key) => key,
+    orderedKeysFn: (totals) =>
+      Object.keys(totals).sort((a, b) => totals[b] - totals[a])
+  },
+  team: {
+    title: 'ITD Team',
+    keyFn: (p) => p.itd_team || NO_TEAM_LABEL,
+    labelFn: (key) => key,
+    orderedKeysFn: (totals) =>
+      Object.keys(totals).sort((a, b) => totals[b] - totals[a])
+  },
+  status: {
+    title: 'Status',
+    keyFn: (p) => p.status || 'Unknown',
+    labelFn: (key) => STATUS_LABELS[key] || key,
+    orderedKeysFn: (totals) =>
+      STATUS_ORDER.filter(s => totals[s] > 0)
+  }
+};
+
+/* ─── View definitions ───────────────────────────────────────────────────── */
+
+const VIEWS = {
+  'goal-dept':   { row: 'goal',   col: 'dept'   },
+  'team-goal':   { row: 'team',   col: 'goal'   },
+  'status-goal': { row: 'status', col: 'goal'   },
+  'dept-status': { row: 'dept',   col: 'status' }
+};
+const DEFAULT_VIEW = 'goal-dept';
+
+function getCurrentView() {
+  const v = new URLSearchParams(window.location.search).get('view');
+  return VIEWS[v] ? v : DEFAULT_VIEW;
 }
+
+function setView(viewId) {
+  const params = new URLSearchParams(window.location.search);
+  if (viewId === DEFAULT_VIEW) params.delete('view'); else params.set('view', viewId);
+  const qs = params.toString();
+  const url = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+  window.history.replaceState(null, '', url);
+}
+
+/* ─── Rendering ──────────────────────────────────────────────────────────── */
 
 function escape(s) {
   if (s == null) return '';
@@ -48,9 +113,25 @@ function textColorFor(count, max) {
   return ratio > 0.55 ? 'white' : 'var(--text-primary)';
 }
 
+function explainerFor(viewId) {
+  const v = VIEWS[viewId];
+  const rowDim = DIMENSIONS[v.row];
+  const colDim = DIMENSIONS[v.col];
+  return `Each row is a ${rowDim.title.toLowerCase()}; each column is a ${colDim.title.toLowerCase()}. The number in each cell is the count of projects at that intersection; cell color scales with that count. The trailing column and row show per-${rowDim.title.toLowerCase()} and per-${colDim.title.toLowerCase()} totals.`;
+}
+
 async function renderHeatmap() {
   const slot = document.getElementById('heatmap-slot');
+  const explainer = document.getElementById('heatmap-explainer');
   if (!slot) return;
+
+  const viewId = getCurrentView();
+  const view = VIEWS[viewId];
+  const rowDim = DIMENSIONS[view.row];
+  const colDim = DIMENSIONS[view.col];
+
+  if (explainer) explainer.textContent = explainerFor(viewId);
+  syncToggleControl(viewId);
 
   const loading = startLoading(slot, 'goal-grid');
 
@@ -59,54 +140,55 @@ async function renderHeatmap() {
     const projects = await getProjects({ filters });
     loading.cancel();
 
-    // grid[goalSlug][dept] = count
+    // grid[rowKey][colKey] = count
     const grid = {};
-    const deptTotals = {};
+    const rowTotals = {};
+    const colTotals = {};
     for (const p of projects) {
-      const slug = projectGoalSlug(p) || 'unclassified';
-      const dept = p.partner_dept || NO_DEPT_LABEL;
-      grid[slug] = grid[slug] || {};
-      grid[slug][dept] = (grid[slug][dept] || 0) + 1;
-      deptTotals[dept] = (deptTotals[dept] || 0) + 1;
+      const rk = rowDim.keyFn(p);
+      const ck = colDim.keyFn(p);
+      grid[rk] = grid[rk] || {};
+      grid[rk][ck] = (grid[rk][ck] || 0) + 1;
+      rowTotals[rk] = (rowTotals[rk] || 0) + 1;
+      colTotals[ck] = (colTotals[ck] || 0) + 1;
     }
 
-    const rows = [...DATA_PROGRAM_GOALS];
-    if (grid['unclassified']) {
-      rows.push({ slug: 'unclassified', short: 'Unclassified' });
-    }
+    const rowKeys = rowDim.orderedKeysFn(rowTotals);
+    const colKeys = colDim.orderedKeysFn(colTotals);
 
-    const depts = Object.keys(deptTotals).sort((a, b) => deptTotals[b] - deptTotals[a]);
-
-    if (depts.length === 0) {
+    if (colKeys.length === 0) {
       slot.innerHTML = `<p class="muted prose" style="padding: var(--space-6) 0;">No projects match the current filter — try clearing filters or visiting the Portfolio.</p>`;
       return;
     }
 
     let maxCount = 0;
-    for (const slug in grid) {
-      for (const c of Object.values(grid[slug])) {
+    for (const rk of rowKeys) {
+      for (const ck of colKeys) {
+        const c = grid[rk]?.[ck] || 0;
         if (c > maxCount) maxCount = c;
       }
     }
 
     let html = `<div class="heatmap-wrap"><table class="heatmap"><thead><tr>`;
     html += `<th class="heatmap__corner"></th>`;
-    for (const d of depts) html += `<th class="heatmap__col">${escape(d)}</th>`;
+    for (const ck of colKeys) {
+      html += `<th class="heatmap__col">${escape(colDim.labelFn(ck))}</th>`;
+    }
     html += `<th class="heatmap__total-h">Total</th></tr></thead><tbody>`;
 
     let grandTotal = 0;
-    for (const row of rows) {
-      html += `<tr><th class="heatmap__row">${escape(row.short)}</th>`;
+    for (const rk of rowKeys) {
+      html += `<tr><th class="heatmap__row">${escape(rowDim.labelFn(rk))}</th>`;
       let rowTotal = 0;
-      for (const d of depts) {
-        const c = grid[row.slug]?.[d] || 0;
+      for (const ck of colKeys) {
+        const c = grid[rk]?.[ck] || 0;
         rowTotal += c;
         if (c === 0) {
           html += `<td class="heatmap__cell heatmap__cell--empty">·</td>`;
         } else {
           const bg = colorFor(c, maxCount);
           const fg = textColorFor(c, maxCount);
-          const tooltip = `${escape(d)} × ${escape(row.short)}: ${c} project${c===1?'':'s'}`;
+          const tooltip = `${escape(colDim.labelFn(ck))} × ${escape(rowDim.labelFn(rk))}: ${c} project${c===1?'':'s'}`;
           html += `<td class="heatmap__cell" style="background:${bg};color:${fg};" title="${tooltip}">${c}</td>`;
         }
       }
@@ -114,9 +196,9 @@ async function renderHeatmap() {
       grandTotal += rowTotal;
     }
 
-    html += `<tr><th class="heatmap__row">Department total</th>`;
-    for (const d of depts) {
-      html += `<td class="heatmap__row-total">${deptTotals[d]}</td>`;
+    html += `<tr><th class="heatmap__row">${escape(colDim.title)} total</th>`;
+    for (const ck of colKeys) {
+      html += `<td class="heatmap__row-total">${colTotals[ck] || 0}</td>`;
     }
     html += `<td class="heatmap__grand-total">${grandTotal}</td></tr>`;
     html += `</tbody></table></div>`;
@@ -128,7 +210,7 @@ async function renderHeatmap() {
         <span>More projects</span>
         <span class="heatmap-legend__divider">·</span>
         <span>Max cell: <strong>${maxCount}</strong></span>
-        <span>Total: <strong>${grandTotal}</strong> project${grandTotal===1?'':'s'} across <strong>${depts.length}</strong> department${depts.length===1?'':'s'}</span>
+        <span>Total: <strong>${grandTotal}</strong> project${grandTotal===1?'':'s'} across <strong>${colKeys.length}</strong> ${escape(colDim.title.toLowerCase())} value${colKeys.length===1?'':'s'}</span>
       </div>`;
 
     slot.innerHTML = html;
@@ -141,6 +223,22 @@ async function renderHeatmap() {
       onRetry: renderHeatmap
     });
   }
+}
+
+function syncToggleControl(viewId) {
+  const select = document.getElementById('heatmap-view');
+  if (select && select.value !== viewId) select.value = viewId;
+}
+
+/* ─── Boot ───────────────────────────────────────────────────────────────── */
+
+const select = document.getElementById('heatmap-view');
+if (select) {
+  select.value = getCurrentView();
+  select.addEventListener('change', () => {
+    setView(select.value);
+    renderHeatmap();
+  });
 }
 
 renderHeatmap();

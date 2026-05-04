@@ -2,7 +2,7 @@
    config.js — shared constants: goals, statuses, fiscal calendar
    ───────────────────────────────────────────────────────────────────────── */
 
-export const APP_VERSION = '1.6.0.0000';
+export const APP_VERSION = '1.7.0.0000';
 
 // Six Data Program goals — values match what's stored in the tracker's
 // dp_goal field. Keep label text in sync with the tracker's domain values.
@@ -92,6 +92,14 @@ export const GOAL_BY_SLUG  = Object.fromEntries(DATA_PROGRAM_GOALS.map(g => [g.s
 
 // Status order for displaying counts and sorting
 export const STATUS_ORDER = ['Active', 'Scheduled', 'Future', 'Idea', 'On Hold', 'Waiting', 'Complete', 'Canceled'];
+
+// Status display labels — the AGOL value differs from what we show users
+// in two cases: "Idea" reads as "Under review" and "Canceled" as "Cancelled"
+// (US spelling for the field, UK spelling preferred for display).
+export const STATUS_LABELS = {
+  'Idea':     'Under review',
+  'Canceled': 'Cancelled'
+};
 
 // Status → CSS color variable
 export const STATUS_COLORS = {
