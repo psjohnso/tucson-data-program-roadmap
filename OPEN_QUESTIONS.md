@@ -105,10 +105,6 @@ Slice the portfolio by `partner_dept` instead of by goal. One card per departmen
 
 Visualize where time and effort actually goes — by goal, by department, by quarter. Probably needs the time-tracking data from the tracker's `time_entries` feature service to be meaningful.
 
-### What Works Cities certification view
-
-Surface the WWC-tagged projects as a dedicated section showing progress against the eight practice areas and 43 criteria. This is an active strategic priority for the team and would be a natural Phase 2 addition.
-
 ### Background data refresh
 
 Currently the data is fetched on page load and stays static. If a user keeps a tab open for an hour, they see stale data. Could add a periodic poll, a refresh button, or a "stale data" indicator.
@@ -138,3 +134,4 @@ Keep these here so they don't get re-proposed:
 - **localStorage / sessionStorage** — no personalization to persist
 - **A bundler / build step** — adds complexity for a static site that doesn't need it
 - **Switching from project_number to a slug-based URL** — `P-NNN` is what the team uses internally, slugs would be a translation layer for no benefit
+- **What Works Cities certification view** — built and shipped briefly in v1.4.0.0000, removed in v1.4.1.0000. The `wwc_practice` and `wwc_criteria` tags applied by the team reflect aspirational alignment, not certified WWC approval; surfacing them publicly as a "certification" view risked misrepresenting Tucson's status. May revisit if and when actual certification status enters the dataset.

@@ -24,7 +24,7 @@ This is the first production release of Tucson DATA. The version bump from v0.1.
 
 **What's deferred to Phase 2:**
 
-Filter modal, sharing modal, department views, investment heatmap, WWC certification view, background data refresh, release notes page. See the bottom of this document.
+Filter modal, sharing modal, department views, investment heatmap, background data refresh, release notes page. See the bottom of this document.
 
 ---
 
@@ -180,7 +180,6 @@ Walk through the site once after deploying v1.0.0.0000. Check each item:
 
 - Filter modal — by status, goal, department
 - Department views — slice portfolio by partner_dept rather than goal
-- WWC certification view — surface the WWC-tagged projects as a dedicated section
 - Sharing modal — generate shareable links to filtered views
 - Investment heatmap — visualize where time and effort actually goes
 - Background data refresh — instead of full-page reload to refresh data
