@@ -19,7 +19,7 @@
    The bar polls every 60s to update relative-time display.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getLastFetchTime, clearCache } from './data.js?v=32';
+import { getLastFetchTime, clearCache } from './data.js?v=33';
 
 const STALE_THRESHOLD_MIN = 15;  // 15 minutes — shows indicator after this
 const TICK_INTERVAL_MS = 60_000;  // re-render bar every minute

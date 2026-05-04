@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=32';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=33';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -235,6 +235,21 @@ export function projectInitiatives(p)      { return multiSelect(p.it_initiative)
 export function projectCityInitiatives(p)  { return multiSelect(p.city_initiative); }
 export function projectWwcPractices(p)     { return multiSelect(p.wwc_practice); }
 export function projectWwcCriteria(p)      { return multiSelect(p.wwc_criteria); }
+
+/** Parse the leading code from a wwc_criteria string entry like
+ *  "DM1 Implementing Data Strategy and Governance" → "DM1". Returns null
+ *  if no leading code is found. */
+export function parseWwcCriterionCode(criterionStr) {
+  if (!criterionStr) return null;
+  const m = String(criterionStr).trim().match(/^([A-Z]+\d+)\b/);
+  return m ? m[1] : null;
+}
+
+/** Return the set of WWC criterion codes a project is tagged with, parsed
+ *  from its wwc_criteria multi-select field. */
+export function projectWwcCriterionCodes(p) {
+  return projectWwcCriteria(p).map(parseWwcCriterionCode).filter(Boolean);
+}
 
 export function projectDisplayTitle(p) {
   return (p.leadership_title?.trim()) || (p.title?.trim()) || '(untitled)';

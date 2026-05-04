@@ -12,11 +12,11 @@ import {
   projectDisplayTitle,
   projectActualEndDate,
   projectEndDate
-} from '../data.js?v=32';
-import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=32';
-import { openProjectModal } from '../modal.js?v=32';
-import { startLoading, showError } from '../ui-state.js?v=32';
-import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=32';
+} from '../data.js?v=33';
+import { DATA_PROGRAM_GOALS, GOAL_BY_VALUE } from '../config.js?v=33';
+import { openProjectModal } from '../modal.js?v=33';
+import { startLoading, showError } from '../ui-state.js?v=33';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=33';
 
 /* ─── Status strip ──────────────────────────────────────────────────────── */
 

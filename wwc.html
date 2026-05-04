@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tucson DATA · Roadmap</title>
-  <meta name="description" content="The City of Tucson Data Team's program roadmap, organized by Data Program Goal.">
+  <title>Tucson DATA · What Works Cities certification</title>
+  <meta name="description" content="How Tucson's data program work maps to the What Works Cities certification framework.">
 
-  <link rel="canonical" href="https://psjohnso.github.io/tucson-data-program-roadmap/roadmap.html">
+  <link rel="canonical" href="https://psjohnso.github.io/tucson-data-program-roadmap/wwc.html">
 
   <!-- Open Graph / link previews (Slack, email, social media) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Tucson DATA">
-  <meta property="og:url" content="https://psjohnso.github.io/tucson-data-program-roadmap/roadmap.html">
-  <meta property="og:title" content="Tucson DATA — Roadmap">
-  <meta property="og:description" content="Active, scheduled, and upcoming Data Program work across the six goals, on a single timeline.">
+  <meta property="og:url" content="https://psjohnso.github.io/tucson-data-program-roadmap/wwc.html">
+  <meta property="og:title" content="Tucson DATA — What Works Cities certification">
+  <meta property="og:description" content="How Tucson's data program work maps to the What Works Cities certification framework — eight practice areas, 43 criteria.">
   <meta property="og:image" content="https://psjohnso.github.io/tucson-data-program-roadmap/assets/tucson-data-logo.png">
   <meta property="og:image:alt" content="Tucson DATA logo — colorful mosaic above the words TUCSON DATA in blue">
 
   <!-- Twitter / X card -->
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tucson DATA — Roadmap">
-  <meta name="twitter:description" content="Active, scheduled, and upcoming Data Program work across the six goals, on a single timeline.">
+  <meta name="twitter:title" content="Tucson DATA — What Works Cities certification">
+  <meta name="twitter:description" content="How Tucson's data program work maps to the What Works Cities certification framework.">
   <meta name="twitter:image" content="https://psjohnso.github.io/tucson-data-program-roadmap/assets/tucson-data-logo.png">
 
   <!-- Indexing posture: allow indexing but discourage caching for HTML -->
@@ -47,8 +47,8 @@
       </a>
       <div class="header-text">
         <div class="header-eyebrow">City of Tucson · Information Technology</div>
-        <h1 class="header-title">Data program roadmap</h1>
-        <p class="header-subtitle">Active and upcoming work, by Data Program goal.</p>
+        <h1 class="header-title">What Works Cities certification</h1>
+        <p class="header-subtitle">How Tucson's data work maps to the WWC certification framework.</p>
       </div>
       <div class="header-cot-logo" aria-label="City of Tucson Information Technology">
         <img src="assets/cot-logos/City-of-Tucson_IT-horizontal.svg" alt="City of Tucson IT">
@@ -57,9 +57,9 @@
     <nav class="topnav" aria-label="Primary navigation">
       <div class="topnav__inner">
         <a href="index.html">Home</a>
-        <a href="roadmap.html" aria-current="page">Roadmap</a>
+        <a href="roadmap.html">Roadmap</a>
         <a href="portfolio.html">Portfolio</a>
-        <a href="wwc.html">WWC</a>
+        <a href="wwc.html" aria-current="page">WWC</a>
         <button class="topnav__filter" type="button" data-filter-toggle aria-haspopup="dialog">
           Filter
           <span class="topnav__filter-badge" hidden>0</span>
@@ -76,24 +76,9 @@
   <main class="page">
     <div class="container">
       <section>
-        <div class="timeline-wrap">
-          <div id="timeline">
-            <p class="muted" style="padding: var(--space-4);">Loading…</p>
-          </div>
-          <div class="timeline-legend">
-            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-active);"></span>Active</span>
-            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-scheduled);"></span>Scheduled</span>
-            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-future);"></span>Future</span>
-            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-onhold);"></span>On hold</span>
-            <span class="timeline-legend__item"><span class="timeline-legend__swatch" style="background: var(--status-canceled);"></span>Cancelled</span>
-            <span class="timeline-legend__item"><span class="timeline-legend__line"></span>Today</span>
-            <span class="timeline-legend__note">Lane = Data Program Goal · click any bar for project details</span>
-          </div>
+        <div id="wwc-content">
+          <p class="muted" style="padding: var(--space-4);">Loading…</p>
         </div>
-        <div class="timeline-scroll-hint">Swipe the timeline to see more →</div>
-        <p class="muted prose" style="margin-top: var(--space-4); font-size: var(--text-sm);">
-          Showing projects with at least one date set, in a window from 3 months back to 18 months forward. Completed work appears on the "Recently shipped" panel of the home page.
-        </p>
       </section>
     </div>
   </main>
@@ -112,6 +97,6 @@
 
   <script type="module" src="js/filter-ui.js?v=33"></script>
   <script type="module" src="js/refresh-ui.js?v=33"></script>
-  <script type="module" src="js/pages/roadmap.js?v=33"></script>
+  <script type="module" src="js/pages/wwc.js?v=33"></script>
 </body>
 </html>
