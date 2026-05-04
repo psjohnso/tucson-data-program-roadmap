@@ -1,19 +1,68 @@
 /* ─────────────────────────────────────────────────────────────────────────
    portfolio.js — strategic portfolio view
-   Renders six goal cards, one per Data Program Goal, with status counts and
-   a sample of project titles drawn from the AGOL service.
+
+   Two render modes, selected by the ?view= URL param:
+     ?view=goal (default)  → six Data Program Goal cards (the original view)
+     ?view=dept            → one card per partner_dept, dynamically derived
+
+   Both views share the same .portfolio-card markup and read filters via
+   filters.js. Dept-card click → applies dept filter, switches to goal view,
+   so leadership can drill from a department overview into how that dept's
+   work distributes across the six goals.
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getProjectsByGoal, projectDisplayTitle } from '../data.js?v=34';
-import { DATA_PROGRAM_GOALS } from '../config.js?v=34';
-import { openProjectModal } from '../modal.js?v=34';
-import { startLoading, showError } from '../ui-state.js?v=34';
-import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=34';
+import { getProjectsByGoal, getProjectsByDepartment, projectDisplayTitle } from '../data.js?v=35';
+import { DATA_PROGRAM_GOALS } from '../config.js?v=35';
+import { openProjectModal } from '../modal.js?v=35';
+import { startLoading, showError } from '../ui-state.js?v=35';
+import { getActiveFilters, subscribe, appendFiltersToHref } from '../filters.js?v=35';
 
 const SAMPLE_LIMIT = 4;
 const STATUS_PRIORITY = ['Active', 'Scheduled', 'Future', 'Idea', 'Waiting', 'On Hold', 'Complete', 'Canceled'];
 
+const STATUS_COLOR_VAR = {
+  'Active':    'var(--status-active)',
+  'Scheduled': 'var(--status-scheduled)',
+  'Future':    'var(--status-future)',
+  'Idea':      'var(--status-idea)',
+  'On Hold':   'var(--status-onhold)',
+  'Waiting':   'var(--status-waiting)',
+  'Complete':  'var(--status-complete)',
+  'Canceled':  'var(--status-canceled)'
+};
+
+/* ─── View routing ───────────────────────────────────────────────────────── */
+
+function getCurrentView() {
+  const v = new URLSearchParams(window.location.search).get('view');
+  return v === 'dept' ? 'dept' : 'goal';
+}
+
+/** Build a portfolio.html href that switches view AND applies a dept filter,
+ *  while preserving any other filters already on the URL (status, goal). */
+function deptCardHref(deptName) {
+  const params = new URLSearchParams(window.location.search);
+  params.delete('view');                 // back to default goal view
+  params.set('dept', deptName);          // apply dept filter
+  const qs = params.toString();
+  return `portfolio.html${qs ? '?' + qs : ''}`;
+}
+
 async function renderPortfolio() {
+  const view = getCurrentView();
+  syncToggleControl(view);
+  if (view === 'dept') return renderByDepartment();
+  return renderByGoal();
+}
+
+function syncToggleControl(view) {
+  const select = document.getElementById('portfolio-view');
+  if (select && select.value !== view) select.value = view;
+}
+
+/* ─── By-goal render (original) ──────────────────────────────────────────── */
+
+async function renderByGoal() {
   const target = document.getElementById('portfolio-grid');
   if (!target) return;
 
@@ -36,72 +85,20 @@ async function renderPortfolio() {
 
     target.innerHTML = visibleGoals.map(goal => {
       const projects = groups[goal.value] || [];
-      const counts = projects.reduce((acc, p) => {
-        acc[p.status || 'Unknown'] = (acc[p.status || 'Unknown'] || 0) + 1;
-        return acc;
-      }, {});
-      const sortedProjects = [...projects].sort((a, b) => {
-        const ai = STATUS_PRIORITY.indexOf(a.status); const bi = STATUS_PRIORITY.indexOf(b.status);
-        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      return renderCard({
+        title: goal.short,
+        href: appendFiltersToHref(`goal.html?goal=${encodeURIComponent(goal.slug)}`),
+        accent: goal.color,
+        description: goal.description,
+        projects,
+        emptyText: 'No projects tagged to this goal yet.'
       });
-      const sampleProjects = sortedProjects.slice(0, SAMPLE_LIMIT);
-      const remaining = Math.max(0, projects.length - SAMPLE_LIMIT);
-
-      return `
-        <article class="portfolio-card" style="--goal-accent: ${goal.color};">
-          <header class="portfolio-card__header">
-            <h2 class="portfolio-card__title"><a href="${appendFiltersToHref(`goal.html?goal=${encodeURIComponent(goal.slug)}`)}">${escape(goal.short)} →</a></h2>
-            <div class="portfolio-card__count-total">${projects.length}</div>
-          </header>
-          <p class="portfolio-card__desc">${escape(goal.description)}</p>
-          <div class="portfolio-card__counts">
-            ${renderCount(counts['Active'],    'Active',    'var(--status-active)')}
-            ${renderCount(counts['Scheduled'], 'Scheduled', 'var(--status-scheduled)')}
-            ${renderCount(counts['Future'],    'Future',    'var(--status-future)')}
-            ${renderCount(counts['Idea'],      'Under review', 'var(--status-idea)')}
-            ${renderCount(counts['Complete'],  'Shipped',   'var(--status-complete)')}
-            ${renderCount(counts['Canceled'],  'Cancelled', 'var(--status-canceled)')}
-          </div>
-          ${sampleProjects.length ? `
-            <ul class="portfolio-card__projects">
-              ${sampleProjects.map(p => `
-                <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
-                  <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
-                  ${escape(projectDisplayTitle(p))}
-                </li>`).join('')}
-            </ul>
-            ${remaining > 0 ? `<div class="portfolio-card__more muted">+ ${remaining} more</div>` : ''}
-          ` : `
-            <p class="portfolio-card__empty muted">No projects tagged to this goal yet.</p>
-          `}
-        </article>`;
     }).join('');
 
-    // After the six brand cards, if any projects fall under "Unclassified"
-    const unclassified = groups['Unclassified'] || [];
-    if (unclassified.length) {
-      const orphans = document.getElementById('orphans');
-      if (orphans) {
-        orphans.innerHTML = `
-          <div class="section-heading">Unclassified Data Program work</div>
-          <p class="muted" style="margin-bottom: var(--space-3);">
-            These projects are flagged as Data Program but don't have a Data Program Goal set yet.
-          </p>
-          <ul class="orphan-list">
-            ${unclassified.slice(0, 10).map(p => `
-              <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
-                <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
-                ${escape(projectDisplayTitle(p))}
-                <span class="faint" style="margin-left: var(--space-2);">${escape(p.status || '')}</span>
-              </li>`).join('')}
-          </ul>
-          ${unclassified.length > 10 ? `<div class="muted" style="margin-top: var(--space-2);">+ ${unclassified.length - 10} more</div>` : ''}
-        `;
-      }
-    }
+    renderUnclassified(groups['Unclassified'] || []);
   } catch (err) {
     loading.cancel();
-    console.error('Failed to render portfolio:', err);
+    console.error('Failed to render portfolio (by goal):', err);
     showError(target, {
       title: "Couldn't load portfolio data",
       error: err,
@@ -110,16 +107,118 @@ async function renderPortfolio() {
   }
 }
 
-const STATUS_COLOR_VAR = {
-  'Active':    'var(--status-active)',
-  'Scheduled': 'var(--status-scheduled)',
-  'Future':    'var(--status-future)',
-  'Idea':      'var(--status-idea)',
-  'On Hold':   'var(--status-onhold)',
-  'Waiting':   'var(--status-waiting)',
-  'Complete':  'var(--status-complete)',
-  'Canceled':  'var(--status-canceled)'
-};
+function renderUnclassified(unclassified) {
+  const orphans = document.getElementById('orphans');
+  if (!orphans) return;
+  if (!unclassified.length) { orphans.innerHTML = ''; return; }
+  orphans.innerHTML = `
+    <div class="section-heading">Unclassified Data Program work</div>
+    <p class="muted" style="margin-bottom: var(--space-3);">
+      These projects are flagged as Data Program but don't have a Data Program Goal set yet.
+    </p>
+    <ul class="orphan-list">
+      ${unclassified.slice(0, 10).map(p => `
+        <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
+          <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
+          ${escape(projectDisplayTitle(p))}
+          <span class="faint" style="margin-left: var(--space-2);">${escape(p.status || '')}</span>
+        </li>`).join('')}
+    </ul>
+    ${unclassified.length > 10 ? `<div class="muted" style="margin-top: var(--space-2);">+ ${unclassified.length - 10} more</div>` : ''}
+  `;
+}
+
+/* ─── By-department render ───────────────────────────────────────────────── */
+
+async function renderByDepartment() {
+  const target = document.getElementById('portfolio-grid');
+  if (!target) return;
+
+  const loading = startLoading(target, 'goal-grid');
+
+  try {
+    const filters = getActiveFilters();
+    const groups = await getProjectsByDepartment({ filters });
+    loading.cancel();
+
+    // Sort departments by total project count, descending — heaviest contributors first.
+    const depts = Object.keys(groups).sort((a, b) => groups[b].length - groups[a].length);
+
+    if (depts.length === 0) {
+      target.innerHTML = `<p class="muted">No departments match the current filter.</p>`;
+      return;
+    }
+
+    target.innerHTML = depts.map(dept => {
+      const projects = groups[dept];
+      return renderCard({
+        title: dept,
+        href: deptCardHref(dept),
+        accent: 'var(--cot-innovation-blue)',
+        description: null,                        // no per-dept descriptions in the data
+        projects,
+        emptyText: null,                          // groups have at least 1 project by construction
+        showDeptOnRow: false                      // hide dept on rows since the card IS the dept
+      });
+    }).join('');
+
+    // Hide orphan section in dept view (it's a goal-specific concept)
+    const orphans = document.getElementById('orphans');
+    if (orphans) orphans.innerHTML = '';
+  } catch (err) {
+    loading.cancel();
+    console.error('Failed to render portfolio (by department):', err);
+    showError(target, {
+      title: "Couldn't load portfolio data",
+      error: err,
+      onRetry: renderPortfolio
+    });
+  }
+}
+
+/* ─── Shared card renderer ───────────────────────────────────────────────── */
+
+function renderCard({ title, href, accent, description, projects, emptyText }) {
+  const counts = projects.reduce((acc, p) => {
+    acc[p.status || 'Unknown'] = (acc[p.status || 'Unknown'] || 0) + 1;
+    return acc;
+  }, {});
+  const sortedProjects = [...projects].sort((a, b) => {
+    const ai = STATUS_PRIORITY.indexOf(a.status); const bi = STATUS_PRIORITY.indexOf(b.status);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+  const sampleProjects = sortedProjects.slice(0, SAMPLE_LIMIT);
+  const remaining = Math.max(0, projects.length - SAMPLE_LIMIT);
+
+  return `
+    <article class="portfolio-card" style="--goal-accent: ${accent};">
+      <header class="portfolio-card__header">
+        <h2 class="portfolio-card__title"><a href="${escape(href)}">${escape(title)} →</a></h2>
+        <div class="portfolio-card__count-total">${projects.length}</div>
+      </header>
+      ${description ? `<p class="portfolio-card__desc">${escape(description)}</p>` : ''}
+      <div class="portfolio-card__counts">
+        ${renderCount(counts['Active'],    'Active',    'var(--status-active)')}
+        ${renderCount(counts['Scheduled'], 'Scheduled', 'var(--status-scheduled)')}
+        ${renderCount(counts['Future'],    'Future',    'var(--status-future)')}
+        ${renderCount(counts['Idea'],      'Under review', 'var(--status-idea)')}
+        ${renderCount(counts['Complete'],  'Shipped',   'var(--status-complete)')}
+        ${renderCount(counts['Canceled'],  'Cancelled', 'var(--status-canceled)')}
+      </div>
+      ${sampleProjects.length ? `
+        <ul class="portfolio-card__projects">
+          ${sampleProjects.map(p => `
+            <li class="project-item" data-objectid="${p.ObjectId}" tabindex="0" role="button" aria-label="View details for ${escape(projectDisplayTitle(p))}">
+              <span class="status-dot" style="background: ${STATUS_COLOR_VAR[p.status] || 'var(--text-tertiary)'};" aria-hidden="true"></span>
+              ${escape(projectDisplayTitle(p))}
+            </li>`).join('')}
+        </ul>
+        ${remaining > 0 ? `<div class="portfolio-card__more muted">+ ${remaining} more</div>` : ''}
+      ` : (emptyText
+        ? `<p class="portfolio-card__empty muted">${escape(emptyText)}</p>`
+        : '')}
+    </article>`;
+}
 
 function renderCount(n, label, color) {
   if (!n) return '';
@@ -132,6 +231,27 @@ function escape(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
+
+/* ─── Toggle dropdown wiring ─────────────────────────────────────────────── */
+
+function setView(view) {
+  const params = new URLSearchParams(window.location.search);
+  if (view === 'goal') params.delete('view'); else params.set('view', view);
+  const qs = params.toString();
+  const url = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+  window.history.replaceState(null, '', url);
+}
+
+const select = document.getElementById('portfolio-view');
+if (select) {
+  select.value = getCurrentView();
+  select.addEventListener('change', () => {
+    setView(select.value);
+    renderPortfolio();
+  });
+}
+
+/* ─── Boot ───────────────────────────────────────────────────────────────── */
 
 renderPortfolio();
 subscribe(renderPortfolio);

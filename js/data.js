@@ -18,7 +18,7 @@
      - dates come as ISO strings like "2026-04-12"
    ───────────────────────────────────────────────────────────────────────── */
 
-import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=34';
+import { getFiscalYear, GOAL_BY_SLUG } from './config.js?v=35';
 
 const SERVICE_URL =
   'https://services3.arcgis.com/9coHY2fvuFjG9HQX/ArcGIS/rest/services/projects_view/FeatureServer/0';
@@ -161,6 +161,19 @@ export async function getProjectsByGoal({ filters = {} } = {}) {
   return groups;
 }
 
+/** Return projects grouped by partner_dept. A project with no department
+ *  ends up under "Unassigned". Single-bucketed (partner_dept is a single
+ *  value on each project, not multi-select). */
+export async function getProjectsByDepartment({ filters = {} } = {}) {
+  const projects = await getProjects({ filters });
+  const groups = {};
+  for (const p of projects) {
+    const dept = p.partner_dept || 'Unassigned';
+    (groups[dept] = groups[dept] || []).push(p);
+  }
+  return groups;
+}
+
 /** Most recently shipped Data Program work — projects with status=Complete
  *  and an actual_end date, sorted newest first. Replaces the earlier
  *  "Recently edited" feed which conflated row updates with project progress. */
@@ -202,7 +215,7 @@ function matchesFilters(p, filters) {
     const wanted = filters.goal.map(slug => GOAL_BY_SLUG[slug]?.value).filter(Boolean);
     if (!projectGoals(p).some(g => wanted.includes(g))) return false;
   }
-  if (filters.dept?.length && !filters.dept.includes(p.partner_dept)) return false;
+  if (filters.dept?.length && !filters.dept.includes(p.partner_dept || 'Unassigned')) return false;
   if (filters.itInitiative?.length && !projectInitiatives(p).some(i => filters.itInitiative.includes(i))) return false;
   if (filters.from && projectEndDate(p) && projectEndDate(p) < filters.from) return false;
   if (filters.to && projectStartDate(p) && projectStartDate(p) > filters.to) return false;
